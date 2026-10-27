@@ -1,0 +1,146 @@
+/* Tela de Perfil — usa somente tokens de tokens.css */
+
+.perfil-avatar-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-align: center;
+}
+
+.perfil-avatar-wrap {
+    width: 120px;
+    height: 120px;
+}
+
+.perfil-avatar-img {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+    box-shadow: var(--shadow-sm);
+}
+
+.perfil-avatar-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.perfil-avatar-hint {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-xs);
+}
+
+/* ── Últimos acessos / Sessões ativas ────────────────────────────────────── */
+
+.p-0 {
+    padding: 0 !important;
+}
+
+/* Mostra ~3 itens sem rolar; do 4º ao 6º acesso, rola dentro do painel —
+   evita que a lista empurre o resto da página quando cresce até 6 itens. */
+.acessos-list {
+    display: flex;
+    flex-direction: column;
+    max-height: 230px;
+    overflow-y: auto;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    .acessos-list {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-primary-800) transparent;
+    }
+}
+
+.acessos-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.acessos-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.acessos-list::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, var(--color-primary-700) 0%, var(--color-primary-900) 100%);
+    border-radius: 20px;
+}
+
+.acessos-list::-webkit-scrollbar-thumb:hover {
+    background-image: linear-gradient(180deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
+}
+
+.acessos-empty {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+    padding: var(--space-5);
+}
+
+.acesso-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+}
+
+.acessos-list .acesso-item + .acesso-item {
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.acesso-item-atual {
+    background: var(--color-success-bg);
+}
+
+.acesso-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--radius-md);
+    background: var(--color-gray-100);
+    color: var(--color-gray-600);
+}
+
+.acesso-item-atual .acesso-icon {
+    background: var(--color-white);
+    color: var(--color-success);
+}
+
+.acesso-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.acesso-tempo {
+    font-weight: 600;
+    color: var(--color-gray-900);
+    font-size: var(--font-size-sm);
+}
+
+.acesso-meta {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-xs);
+}
+
+.badge-atual {
+    flex-shrink: 0;
+    background: var(--color-success-bg);
+    color: var(--color-success);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-full);
+}

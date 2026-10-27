@@ -1,0 +1,191 @@
+/**
+ * Embed de Cotações (imobiliária) — pages/embed.php
+ * Cartão de ativação (switch + URL) e grade de códigos de <iframe>.
+ */
+
+.embed-config-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.embed-config .switch {
+    padding: var(--space-1) 0;
+}
+
+.embed-config .switch-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.embed-config-desc {
+    margin: var(--space-1) 0 0 50px;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.embed-config-desc code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    background-color: var(--color-gray-100);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--color-gray-700);
+}
+
+.embed-domain-view {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+}
+
+.embed-domain-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+    border-radius: var(--radius-sm);
+}
+
+.embed-domain-text {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    word-break: break-all;
+}
+
+.embed-domain-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+.embed-url-block {
+    display: grid;
+    grid-template-rows: 0fr;
+    min-height: 0;
+    opacity: 0;
+    transition: grid-template-rows var(--transition-base), opacity var(--transition-base), margin-top var(--transition-base);
+    margin-top: 0;
+}
+
+.embed-url-block.is-open {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: var(--space-4);
+}
+
+.embed-url-block > div {
+    min-height: 0;
+    overflow: hidden;
+}
+
+.embed-url-row {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.embed-url-row .field {
+    flex: 1 1 260px;
+    margin-bottom: 0;
+    min-width: 220px;
+}
+
+/* ── Grade de produtos ─────────────────────────────────────────────────────── */
+
+.embed-grid-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.embed-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-4);
+}
+
+.embed-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+}
+
+.embed-card-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.embed-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+    border-radius: var(--radius-md);
+}
+
+.embed-card-title h3 {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.embed-code {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: var(--font-size-xs);
+    line-height: 1.5;
+    color: var(--color-gray-700);
+    background-color: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    max-height: 96px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.embed-snippet-value {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.embed-card-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.embed-empty {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+}

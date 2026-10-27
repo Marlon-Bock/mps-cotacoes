@@ -1,0 +1,359 @@
+/**
+ * Construtor visual do fluxo do FAQ (admin) — blocos empilháveis, arrastáveis,
+ * editados inline (sem modal por item). Reaproveita .field/.field-label/
+ * .btn/.switch já existentes; aqui só o que é específico do construtor.
+ */
+
+#flow-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.flow-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.flow-block {
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+}
+
+/* Blocos dentro de um sub-fluxo (opção aninhada) ficam com borda tracejada
+   pra diferenciar visualmente do nível principal do fluxo. */
+.mini-flow-list .flow-block {
+    border-style: dashed;
+}
+
+/* Cantos de cima arredondados igual ao card — sem "overflow:hidden" no
+   .flow-block (removido de propósito), que cortaria o dropdown do
+   custom_select() (tipo_captura) sempre que ele precisasse escapar da
+   altura do bloco pra abrir. */
+.flow-block-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+}
+
+.flow-block-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.block-drag {
+    display: flex;
+    align-items: center;
+    color: var(--color-gray-400);
+    cursor: grab;
+    flex-shrink: 0;
+}
+
+.block-drag:active {
+    cursor: grabbing;
+}
+
+.block-drag .icon {
+    width: 14px;
+    height: 14px;
+}
+
+.flow-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.flow-type-badge .icon {
+    width: 14px;
+    height: 14px;
+}
+
+.type-mensagem { background: var(--color-info-bg); color: var(--color-info); }
+.type-mensagem_botao { background: var(--color-warning-bg); color: var(--color-warning); }
+.type-resposta_texto { background: var(--color-success-bg); color: var(--color-success); }
+.type-opcoes { background: var(--color-primary-100); color: var(--color-primary-700); }
+.type-chamado { background: var(--color-danger-bg); color: var(--color-danger); }
+
+.flow-block-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+}
+
+.flow-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.flow-field-label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-gray-600);
+}
+
+.flow-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+}
+
+/* .flow-block-body já espaça via gap — sem a margem própria de .alert */
+.flow-alert-flush {
+    margin-bottom: 0;
+}
+
+/* ── Zona "Adicionar bloco" ─────────────────────────────────────────────── */
+
+.add-block-zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2) 0;
+}
+
+.add-block-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px dashed var(--color-gray-200);
+}
+
+.btn-add-block {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-full);
+    padding: var(--space-1) var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-gray-600);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.btn-add-block:hover {
+    border-color: var(--color-primary-600);
+    color: var(--color-primary-700);
+}
+
+.btn-add-block .icon {
+    width: 14px;
+    height: 14px;
+}
+
+.add-block-panel {
+    display: none;
+    position: fixed;
+    z-index: 1100;
+    min-width: 280px;
+    max-height: 420px;
+    overflow-y: auto;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-2);
+}
+
+.add-block-panel.open {
+    display: block;
+}
+
+.add-block-group-title {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-gray-400);
+    padding: var(--space-2) var(--space-2) var(--space-1);
+}
+
+.add-block-option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-2);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.add-block-option:hover {
+    background: var(--color-gray-50);
+}
+
+.add-block-option-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.add-block-option-icon .icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.add-block-option strong {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+}
+
+.add-block-option > div > span {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+/* ── Lista de Opções ────────────────────────────────────────────────────── */
+
+.opcoes-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.opcao-item {
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    background: var(--color-gray-50);
+}
+
+.opcao-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.opcao-nome {
+    flex: 1;
+}
+
+.miniflow-body {
+    margin-top: var(--space-3);
+    padding-left: var(--space-5);
+    border-left: 2px solid var(--color-gray-200);
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-flow-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Botões de ação de bloco/opção ──────────────────────────────────────── */
+
+.btn-icon-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-gray-400);
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+}
+
+.btn-icon-action:hover {
+    color: var(--color-danger);
+    background: var(--color-danger-bg);
+}
+
+.btn-icon-action .icon {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-add-opcao {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: none;
+    border: 1px dashed var(--color-gray-300);
+    border-radius: var(--radius-md);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-gray-600);
+    cursor: pointer;
+}
+
+.btn-add-opcao:hover {
+    border-color: var(--color-primary-600);
+    color: var(--color-primary-700);
+}
+
+.btn-add-opcao .icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* ── Estado vazio + drag states (SortableJS) ────────────────────────────── */
+
+.flow-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-7) var(--space-4);
+    text-align: center;
+    color: var(--color-gray-500);
+}
+
+.flow-empty-icon .icon {
+    width: 36px;
+    height: 36px;
+    opacity: 0.4;
+}
+
+.flow-empty-title {
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.flow-empty-sub {
+    font-size: var(--font-size-sm);
+}
+
+.sortable-ghost {
+    opacity: 0.4;
+}
+
+.sortable-chosen .flow-block,
+.sortable-chosen .opcao-item {
+    box-shadow: var(--shadow-lg);
+}

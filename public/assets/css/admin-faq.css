@@ -1,0 +1,38 @@
+/**
+ * Gerenciar FAQ (admin) — só o que falta além de faq.css (accordion) e
+ * components.css (.modal, .switch, .status-pill, já reaproveitados).
+ */
+
+.admin-faq-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+}
+
+/* Espaça os blocos de FAQ carregados via AJAX — mesmo princípio do
+   .app-content (gap no pai, sem margem solta nos filhos). */
+#faq-lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.admin-faq-bloco-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.admin-faq-item-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    flex-shrink: 0;
+}
+
+/* Dentro de .panel-list-item (opções do fluxo) o próprio .panel-list-item
+   já espaça as linhas — sem margem extra aqui. */
+.panel-list-item .admin-faq-item-actions {
+    margin-top: 0;
+}

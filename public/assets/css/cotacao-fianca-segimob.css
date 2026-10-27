@@ -1,0 +1,1742 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Comparador de seguradoras (Segimob) — mesmo visual da tela de
+   seguradoras do dev-cotacoes: card com logo grande, selo de status,
+   prêmio em destaque, grade de detalhes, avisos e modal de contratação.
+   ══════════════════════════════════════════════════════════════════════ */
+
+.seg-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.seg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-5);
+}
+
+.seg-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.seg-card--melhor {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 1px var(--color-success), var(--shadow-md);
+}
+
+.seg-card-fita {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    padding: 6px var(--space-4);
+    background: var(--color-success);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.seg-card-fita svg { width: 13px; height: 13px; }
+
+.seg-card-marca {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6) var(--space-5) var(--space-4);
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.seg-logo-img {
+    width: 168px;
+    height: 63px;
+    object-fit: contain;
+}
+
+.seg-logo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 72px;
+    border-radius: var(--radius-md);
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+}
+
+.seg-card-titulo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    padding: var(--space-4) var(--space-5) 0;
+}
+
+.seg-nome {
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-900);
+    line-height: 1.2;
+}
+
+.seg-subtitulo {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    font-variant-numeric: tabular-nums;
+}
+
+.seg-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    padding: 3px 12px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.seg-status svg { width: 12px; height: 12px; }
+
+.seg-status--ok       { background: var(--color-success-bg); color: var(--color-success); }
+.seg-status--recusada { background: var(--color-danger-bg);  color: var(--color-danger); }
+.seg-status--pendente { background: var(--color-warning-bg); color: var(--color-warning); }
+
+.seg-apolice {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.seg-apolice svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+.seg-apolice-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+/* Apólice emitida mas ainda "Creating" na seguradora (PDF ainda não existe). */
+.seg-apolice--pendente {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.seg-apolice-status {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.seg-apolice-aviso {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+.seg-documentos {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.seg-card-rodape.seg-documentos .btn {
+    flex: 1;
+    width: auto;
+}
+
+.seg-apolice-numero {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.seg-card-premio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+    padding: var(--space-5) var(--space-5) 0;
+}
+
+.seg-premio-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-premio-valor {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-gray-900);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+/* Campos no padrão do sistema (.field-input-wrap + ícone + placeholder);
+   aqui só ocupam a largura que sobra ao lado do botão. */
+
+.seg-premio-parcela {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.seg-detalhes {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-3) var(--space-4);
+    margin: var(--space-4) var(--space-5) 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.seg-detalhe-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.seg-detalhe-item--wide {
+    grid-column: 1 / -1;
+}
+
+.seg-detalhe-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.seg-detalhe-valor {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.seg-card-rodape {
+    margin-top: var(--space-4);
+    padding: var(--space-4) var(--space-5) 0;
+}
+
+.seg-card-rodape .btn {
+    width: 100%;
+    height: 42px;
+}
+
+.seg-card-rodape-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: auto;
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.seg-card-rodape-meta svg { width: 12px; height: 12px; }
+
+@media (max-width: 480px) {
+    .seg-grid { grid-template-columns: 1fr; }
+    .seg-detalhes { grid-template-columns: 1fr; }
+}
+
+/* ── Modal "Escolher proposta" (dados do proprietário) ── */
+.seg-modal-proprietario {
+    max-width: 600px;
+}
+
+/* O form envolve body + footer: header e footer ficam fixos e só o
+   .modal-body rola (ele já tem overflow-y: auto no components.css). */
+.seg-modal-form {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.seg-modal-intro {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-modal-secao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.seg-modal-secao .field-label {
+    margin: 0;
+}
+
+/* ── Aviso dentro do card (erro, alerta, info, sucesso) ──────────────────
+   Ver pages/cotacao/_partials/seguradoras/aviso.php: ícone + título na 1ª
+   linha; texto e detalhe embaixo, na largura toda (sem recuo). */
+.seg-aviso {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: var(--space-4) var(--space-5) 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+}
+
+.seg-aviso-cabeca {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+}
+
+.seg-aviso-icone {
+    display: inline-flex;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.seg-aviso-icone svg { width: 17px; height: 17px; }
+
+.seg-aviso-titulo { font-weight: 600; }
+
+.seg-aviso-texto {
+    margin: 0;
+    color: var(--color-gray-700);
+}
+
+.seg-aviso-extra {
+    margin: 2px 0 0;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+    overflow-wrap: anywhere;
+}
+
+.seg-aviso-extra strong {
+    font-weight: 600;
+    color: var(--color-gray-800);
+    font-variant-numeric: tabular-nums;
+}
+
+.seg-aviso-acao { margin-top: var(--space-2); }
+
+.seg-aviso--erro    { background: var(--color-danger-bg);  border-color: color-mix(in srgb, var(--color-danger) 18%, transparent); }
+.seg-aviso--alerta  { background: var(--color-warning-bg); border-color: color-mix(in srgb, var(--color-warning) 18%, transparent); }
+.seg-aviso--info    { background: var(--color-info-bg);    border-color: color-mix(in srgb, var(--color-info) 12%, transparent); }
+.seg-aviso--sucesso { background: var(--color-success-bg); border-color: color-mix(in srgb, var(--color-success) 18%, transparent); }
+
+.seg-aviso--erro    .seg-aviso-icone, .seg-aviso--erro    .seg-aviso-titulo { color: var(--color-danger); }
+.seg-aviso--alerta  .seg-aviso-icone, .seg-aviso--alerta  .seg-aviso-titulo { color: var(--color-warning); }
+.seg-aviso--info    .seg-aviso-icone, .seg-aviso--info    .seg-aviso-titulo { color: var(--color-info); }
+.seg-aviso--sucesso .seg-aviso-icone, .seg-aviso--sucesso .seg-aviso-titulo { color: var(--color-success); }
+
+/* No modal o aviso ocupa a largura toda (sem o recuo do card). */
+.seg-modal-form .seg-aviso { margin: 0; }
+
+/* ── Aguardando a seguradora (o cron reconsulta; a tela atualiza sozinha) ── */
+.seg-processando {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.seg-processando--solto {
+    margin-top: 0;
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-md);
+}
+
+.seg-processando-spinner {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.seg-processando-titulo {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.seg-processando-texto {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-size-xs);
+}
+
+/* ── Modal de contratação: blocos (proprietário, endereço, pagamento) ── */
+.seg-contratar-bloco {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.seg-contratar-bloco + .seg-contratar-bloco {
+    margin-top: var(--space-2);
+}
+
+.seg-contratar-bloco .form-section-title {
+    margin: 0;
+}
+
+.seg-contratar-bloco .field {
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .seg-contratar-bloco .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Observação curta na faixa da apólice (ex: "Cobrado na fatura — sem boleto avulso."). */
+.seg-apolice-nota {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+/* ── Ficha encaminhada pra fila da MPS (recusada / outras seguradoras) ── */
+.seg-encaminhada {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    color: var(--color-gray-700);
+}
+
+.seg-encaminhada > svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    color: var(--color-primary-600);
+}
+
+.seg-encaminhada-titulo {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.seg-encaminhada-texto {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-size-sm);
+}
+
+
+/* ── Planos da seguradora (quando ela oferece mais de um): botões lado a
+   lado, compactos (nome em cima, valor embaixo) ── */
+.seg-planos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: var(--space-4) var(--space-5) 0;
+}
+
+.seg-planos-titulo {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-gray-400);
+}
+
+.seg-planos-opcoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 6px;
+}
+
+.seg-plano {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    min-width: 0;
+    padding: 6px var(--space-2);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.seg-plano:hover {
+    border-color: var(--color-primary-300);
+}
+
+.seg-plano.is-ativo {
+    border-color: var(--color-primary-600);
+    background: var(--color-primary-50);
+    box-shadow: inset 0 0 0 1px var(--color-primary-600);
+}
+
+.seg-plano-nome {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+}
+
+.seg-plano-valor {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    white-space: nowrap;
+}
+
+.seg-plano.is-ativo .seg-plano-nome,
+.seg-plano.is-ativo .seg-plano-valor {
+    color: var(--color-primary-700);
+}
+
+/* "Escolher e contratar" sempre no pé do card — alinhado entre os cards. */
+.seg-card-rodape--acao {
+    margin-top: auto;
+    padding-top: var(--space-5);
+}
+
+.seg-card-rodape--acao + .seg-card-rodape-meta {
+    margin-top: 0;
+}
+
+/* ── Prêmio: nome do plano logo abaixo do valor ── */
+.seg-premio-plano {
+    margin-top: 2px;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-premio-plano strong {
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+/* ── Composição do prêmio: 3 blocos lado a lado (líquido, IOF, vigência) ── */
+.seg-resumo {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: var(--space-4) var(--space-5) 0;
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-md);
+    background: var(--color-gray-50);
+}
+
+.seg-resumo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: var(--space-3) var(--space-2);
+    text-align: center;
+}
+
+.seg-resumo-item + .seg-resumo-item {
+    border-left: 1px solid var(--color-gray-100);
+}
+
+.seg-resumo-item dt {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-gray-400);
+}
+
+.seg-resumo-item dd {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-gray-800);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Proposta de outra seguradora quando a cotação já foi contratada: fica
+   visível pra comparação, mas apagada. */
+.seg-card--inativa .seg-card-marca,
+.seg-card--inativa .seg-card-titulo,
+.seg-card--inativa .seg-card-premio,
+.seg-card--inativa .seg-resumo {
+    opacity: 0.55;
+}
+
+/* ── Detalhes da análise (recolhido): tudo o mais que a seguradora devolveu ── */
+.seg-mais {
+    margin: var(--space-3) var(--space-5) 0;
+    font-size: var(--font-size-sm);
+}
+
+.seg-mais summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-primary-700);
+    cursor: pointer;
+    list-style: none;
+}
+
+.seg-mais summary::-webkit-details-marker {
+    display: none;
+}
+
+.seg-mais summary svg {
+    width: 14px;
+    height: 14px;
+}
+
+.seg-mais-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: var(--space-2) 0 0;
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    background: var(--color-gray-50);
+}
+
+.seg-mais-item,
+.seg-pos-linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-3);
+    font-size: var(--font-size-xs);
+}
+
+.seg-mais-item dt,
+.seg-pos-linha dt {
+    color: var(--color-gray-500);
+}
+
+.seg-mais-item dd,
+.seg-pos-linha dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-gray-800);
+    text-align: right;
+}
+
+/* ── PDFs da seguradora (carta-resposta, orçamento) ── */
+.seg-docs-seguradora {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin: var(--space-3) var(--space-5) 0;
+}
+
+.seg-doc-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-primary-700);
+    text-decoration: none;
+}
+
+.seg-doc-link:hover {
+    text-decoration: underline;
+}
+
+.seg-doc-link svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ── Contratada: dados da pós-emissão em linhas ── */
+.seg-pos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: var(--space-3) var(--space-5);
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.seg-pagamento-selo {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+    padding: 1px 8px;
+    border-radius: var(--radius-full);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.seg-pagamento-selo svg {
+    width: 12px;
+    height: 12px;
+}
+
+.seg-pagamento-selo.is-pendente {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.seg-pagamento-selo.is-ok {
+    background: var(--color-white);
+    color: var(--color-success);
+}
+
+
+/* ── "Ver mais detalhes" (um só por card): pós-emissão, análise e PDFs ── */
+.seg-mais {
+    margin: var(--space-4) var(--space-5) 0;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+    font-size: var(--font-size-sm);
+}
+
+.seg-mais summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-primary-700);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+}
+
+.seg-mais summary:hover {
+    color: var(--color-primary-800);
+}
+
+.seg-mais summary svg {
+    width: 14px;
+    height: 14px;
+    transition: transform var(--transition-fast);
+}
+
+.seg-mais[open] summary svg {
+    transform: rotate(180deg);
+}
+
+.seg-mais-fechar,
+.seg-mais[open] .seg-mais-abrir {
+    display: none;
+}
+
+.seg-mais[open] .seg-mais-fechar {
+    display: inline;
+}
+
+.seg-mais-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+}
+
+.seg-mais-titulo {
+    margin-top: var(--space-1);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-gray-400);
+}
+
+.seg-mais-lista {
+    margin: 0;
+}
+
+.seg-mais .seg-docs-seguradora {
+    margin: 0;
+    padding: var(--space-1) 0;
+}
+
+/* Faixa da apólice: vigência e pagamento com ícone, compactos. */
+.seg-apolice-corpo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.seg-apolice-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-gray-700);
+}
+
+.seg-apolice-info svg {
+    width: 12px;
+    height: 12px;
+    color: var(--color-success);
+}
+
+.seg-apolice .seg-pagamento-selo {
+    align-self: flex-start;
+}
+
+/* Botões da apólice/boleto: lado a lado, mesma largura. */
+.seg-documentos {
+    flex-wrap: nowrap;
+}
+
+/* Informações extras direto no card (sem "Ver mais"). */
+.seg-mais > .seg-mais-corpo {
+    margin-top: 0;
+}
+
+/* ── Lista: card enxuto (logo, nome, status, prêmio e "Ver detalhes") ── */
+.seg-card--enxuto .seg-card-marca {
+    min-height: 96px;
+}
+
+.seg-card-resumo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 92px;
+    padding: var(--space-4) var(--space-5) 0;
+    text-align: center;
+}
+
+.seg-card-situacao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.seg-card-situacao svg {
+    width: 16px;
+    height: 16px;
+}
+
+.seg-card-situacao.is-recusada { color: var(--color-danger, #b42318); }
+.seg-card-situacao.is-alerta   { color: var(--color-warning); }
+.seg-card-situacao.is-pendente { color: var(--color-gray-500); }
+
+.seg-card-situacao .seg-processando-spinner {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+}
+
+.seg-card--enxuto .seg-card-rodape--acao .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.seg-card--enxuto .seg-card-rodape--acao .btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ── Detalhes da proposta de uma seguradora ── */
+.seg-proposta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.seg-proposta-topo {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-5) var(--space-6, 24px);
+}
+
+.seg-proposta-marca {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 72px;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    background: var(--color-gray-50);
+}
+
+.seg-proposta-marca .seg-logo-img {
+    max-height: 48px;
+    max-width: 150px;
+}
+
+.seg-proposta-id {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    min-width: 0;
+}
+
+.seg-proposta-nome {
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.seg-proposta-sub {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.seg-proposta-premio {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    text-align: right;
+}
+
+.seg-proposta-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--space-4);
+    align-items: start;
+}
+
+.seg-proposta-principal,
+.seg-proposta-lateral {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+}
+
+.seg-proposta-principal > .seg-aviso,
+.seg-proposta-principal > .seg-processando {
+    margin: 0;
+}
+
+.seg-proposta-bloco {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+}
+
+.seg-proposta-bloco-titulo {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-gray-500);
+}
+
+.seg-proposta-bloco .seg-resumo,
+.seg-proposta-bloco .seg-planos {
+    margin: 0;
+}
+
+.seg-proposta-apolice {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.seg-proposta-apolice > svg {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.seg-proposta-linhas {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+}
+
+.seg-proposta-linha {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+}
+
+.seg-proposta-linha dt { color: var(--color-gray-500); }
+.seg-proposta-linha dd { margin: 0; font-weight: 600; color: var(--color-gray-800); text-align: right; }
+
+.seg-proposta-texto {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-proposta-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.seg-proposta-lateral .seg-doc-link {
+    font-size: var(--font-size-sm);
+}
+
+.seg-proposta-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.seg-proposta-meta svg {
+    width: 12px;
+    height: 12px;
+}
+
+@media (max-width: 960px) {
+    .seg-proposta-grid { grid-template-columns: 1fr; }
+    .seg-proposta-topo { grid-template-columns: 1fr; text-align: left; }
+    .seg-proposta-premio { align-items: flex-start; text-align: left; }
+    .seg-proposta-marca { justify-content: flex-start; background: none; padding: 0; height: auto; }
+}
+
+/* Detalhes da proposta: dados em 2 colunas. */
+.seg-proposta-dados {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-5);
+    margin: 0;
+}
+
+.seg-proposta-dado {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.seg-proposta-dado dt {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-proposta-dado dd {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    overflow-wrap: anywhere;
+}
+
+/* Cobertura: valores à esquerda, adicionais à direita. */
+.seg-proposta-cobertura {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-5);
+}
+
+.seg-proposta-linha--total {
+    margin-top: 2px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--color-gray-200);
+}
+
+.seg-proposta-linha--total dt,
+.seg-proposta-linha--total dd {
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.seg-proposta-adicionais {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--font-size-sm);
+}
+
+.seg-proposta-adicionais li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.seg-proposta-adicionais svg {
+    width: 14px;
+    height: 14px;
+}
+
+.seg-proposta-adicionais .is-sim { color: var(--color-gray-800); }
+.seg-proposta-adicionais .is-sim svg { color: var(--color-success); }
+.seg-proposta-adicionais .is-nao { color: var(--color-gray-400); }
+
+/* Comissão (só MPS). */
+.seg-proposta-comissao {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.seg-proposta-comissao-valor {
+    font-size: var(--font-size-2xl, 1.5rem);
+    font-weight: 800;
+    color: var(--color-gray-900);
+    font-variant-numeric: tabular-nums;
+}
+
+.seg-proposta-comissao-pct {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+@media (max-width: 640px) {
+    .seg-proposta-dados,
+    .seg-proposta-cobertura { grid-template-columns: 1fr; }
+}
+
+/* ── Detalhes: um painel "Proposta" com seções separadas por linha ── */
+.seg-proposta-painel {
+    display: flex;
+    flex-direction: column;
+}
+
+.seg-proposta-secao {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-5);
+}
+
+.seg-proposta-secao + .seg-proposta-secao {
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.seg-proposta-secao .seg-resumo,
+.seg-proposta-secao .seg-planos {
+    margin: 0;
+}
+
+/* Detalhes: 3 colunas. */
+.seg-proposta-dados {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Cobertura: valores numa coluna estreita + adicionais em etiquetas. */
+.seg-proposta-cobertura {
+    grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+    gap: var(--space-6, 24px);
+    align-items: start;
+}
+
+.seg-proposta-adicionais-bloco {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.seg-proposta-adicionais-titulo {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-proposta-adicionais {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.seg-proposta-adicionais li {
+    padding: 4px 10px;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.seg-proposta-adicionais li.is-sim {
+    border-color: var(--color-success);
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.seg-proposta-adicionais li.is-nao {
+    background: var(--color-gray-50);
+    color: var(--color-gray-400);
+    text-decoration: line-through;
+}
+
+.seg-proposta-adicionais li svg {
+    width: 12px;
+    height: 12px;
+}
+
+@media (max-width: 900px) {
+    .seg-proposta-dados { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .seg-proposta-cobertura { grid-template-columns: 1fr; }
+}
+
+/* Modal "Corrigir dados": motivo da recusa embaixo do campo. */
+.seg-corrigir-erro {
+    color: var(--color-danger, #b42318);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   Fluxo com a MPS no meio (dev-cotacoes-3):
+   - MPS: barra "Fazer cotação" + chave "Enviar ao cliente" em cada card;
+     painel da análise no detalhe (lista de seguradoras);
+   - imobiliária: propostas enviadas pela MPS e a apólice, no detalhe.
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Linha do topo: instrução da etapa + "Atualizar". */
+.seg-toolbar--instrucao {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.seg-toolbar-texto {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1 1 320px;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-toolbar-texto svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--color-gray-400); }
+
+/* Barra de envio das propostas — presa no rodapé da área de conteúdo. */
+.seg-card .seg-card-situacao + .seg-card-rodape,
+.seg-card > .seg-card-situacao {
+    margin-left: var(--space-5);
+    margin-right: var(--space-5);
+}
+
+/* Painel da análise no detalhe da MPS */
+.seg-mps-lista {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-3);
+    padding: 0;
+}
+
+.seg-mps-lista li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+.seg-mps-lista li strong { margin-left: auto; }
+.seg-mps-lista li .status-pill { margin-left: auto; }
+.seg-mps-lista li strong + .status-pill { margin-left: 0; }
+
+.seg-mps-lista--status {
+    margin: var(--space-4) 0 0;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+/* Propostas pra imobiliária — lista comparativa: uma linha por seguradora
+   (marca · nome/selos · planos · prêmio · ação), do menor valor pro maior. */
+.seg-ofertas-cabeca {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.seg-ofertas-data {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-propostas-intro {
+    margin: 0 0 var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-ofertas {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.seg-oferta {
+    display: grid;
+    grid-template-columns: 112px minmax(150px, 1.1fr) minmax(180px, 1.4fr) 150px auto;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-white);
+}
+
+.seg-oferta + .seg-oferta { border-top: 1px solid var(--color-gray-100); }
+
+.seg-oferta--melhor {
+    background: color-mix(in srgb, var(--color-success-bg) 55%, var(--color-white));
+    box-shadow: inset 3px 0 0 var(--color-success);
+}
+
+.seg-oferta-marca {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+}
+
+.seg-oferta-marca .seg-logo-img {
+    max-width: 112px;
+    max-height: 40px;
+    object-fit: contain;
+}
+
+.seg-oferta-marca .seg-logo-fallback {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-sm);
+}
+
+.seg-oferta-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.seg-oferta-nome {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.seg-oferta-selos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.seg-oferta-menor {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--color-success);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.seg-oferta-menor svg { width: 12px; height: 12px; }
+
+.seg-oferta-planos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Planos como controle segmentado (um só ativo). */
+.seg-oferta-opcoes {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-self: flex-start;
+    padding: 3px;
+    gap: 3px;
+    border-radius: var(--radius-md);
+    background: var(--color-gray-100);
+}
+
+.seg-oferta-opcao {
+    padding: 6px 12px;
+    border: 0;
+    border-radius: calc(var(--radius-md) - 2px);
+    background: transparent;
+    color: var(--color-gray-600);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.seg-oferta-opcao:hover { color: var(--color-gray-900); }
+
+.seg-oferta-opcao.is-ativo {
+    background: var(--color-white);
+    color: var(--color-gray-900);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+
+.seg-oferta-plano-unico {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-oferta-aviso {
+    font-size: var(--font-size-xs);
+    color: var(--color-warning);
+}
+
+.seg-oferta-preco {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.seg-oferta-valor {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--color-gray-900);
+    white-space: nowrap;
+}
+
+.seg-oferta-valor-sub {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-oferta-acao { justify-self: end; }
+
+.seg-oferta-acao .btn { min-width: 112px; }
+
+.seg-propostas-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.seg-propostas-rodape-texto {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+@media (max-width: 960px) {
+    .seg-oferta {
+        grid-template-columns: 88px 1fr auto;
+        grid-template-areas:
+            "marca info  preco"
+            "marca planos acao";
+        row-gap: var(--space-3);
+    }
+    .seg-oferta-marca  { grid-area: marca; }
+    .seg-oferta-info   { grid-area: info; }
+    .seg-oferta-planos { grid-area: planos; }
+    .seg-oferta-preco  { grid-area: preco; }
+    .seg-oferta-acao   { grid-area: acao; }
+}
+
+@media (max-width: 560px) {
+    .seg-oferta {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "marca  preco"
+            "info   info"
+            "planos planos"
+            "acao   acao";
+        padding: var(--space-4);
+    }
+    .seg-oferta-marca { justify-content: flex-start; }
+    .seg-oferta-acao { justify-self: stretch; }
+    .seg-oferta-acao .btn { width: 100%; }
+    .seg-propostas-rodape { flex-direction: column; align-items: stretch; text-align: center; }
+}
+
+.seg-documentos-linha {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+#painel-apolice-segimob .seg-proposta-linhas { margin-top: var(--space-3); }
+
+
+
+
+/* Estados do painel "Análise da cotação" (imobiliária) — mesmo bloco do
+   "Em análise", só muda a cor e o ícone. */
+.seg-processando-icone {
+    flex-shrink: 0;
+    display: inline-flex;
+    margin-top: 1px;
+}
+
+.seg-processando-icone svg { width: 20px; height: 20px; }
+
+.seg-processando--ok     { background: var(--color-success-bg); color: var(--color-success); }
+.seg-processando--alerta { background: var(--color-warning-bg); color: var(--color-warning); }
+.seg-processando--erro   { background: var(--color-danger-bg);  color: var(--color-danger); }
+
+.seg-processando-acao { margin-top: var(--space-3); }
+
+/* Proposta aceita (imobiliária): a linha da seguradora escolhida + a
+   situação da apólice embaixo, no mesmo contorno da lista de propostas. */
+.seg-oferta--aceita {
+    grid-template-columns: 112px 1fr auto;
+}
+
+.seg-oferta-detalhes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-oferta-detalhes span + span::before {
+    content: '·';
+    margin: 0 8px;
+    color: var(--color-gray-300);
+}
+
+.seg-aceita-apolice {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+    font-size: var(--font-size-sm);
+}
+
+.seg-aceita-apolice .seg-processando-spinner { width: 16px; height: 16px; margin: 0; }
+
+.seg-aceita-apolice.is-enviada {
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.seg-aceita-apolice-texto {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.seg-aceita-apolice-texto svg { width: 18px; height: 18px; }
+
+.seg-aceita-apolice-docs {
+    display: inline-flex;
+    gap: var(--space-2);
+}
+
+@media (max-width: 960px) {
+    .seg-oferta--aceita {
+        grid-template-columns: 88px 1fr auto;
+        grid-template-areas: "marca info preco";
+    }
+}
+
+@media (max-width: 560px) {
+    .seg-oferta--aceita {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "marca preco"
+            "info  info";
+    }
+    .seg-aceita-apolice { padding: var(--space-3) var(--space-4); }
+}
+
+/* Painel da Segimob no detalhe da MPS (coluna direita). */
+.seg-mps-estado { margin-bottom: var(--space-3); }
+
+.seg-mps-resumo {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 var(--space-3);
+}
+
+.seg-mps-resumo > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+    font-size: var(--font-size-sm);
+}
+
+.seg-mps-resumo > div:first-child { padding-top: 0; }
+
+.seg-mps-resumo dt { color: var(--color-gray-500); }
+
+.seg-mps-resumo dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    text-align: right;
+}
+/* ─── "Enviar cotação" no painel do detalhe (MPS) — fianca/admin/_segimob ───
+   A lista das seguradoras e o envio só aparecem depois do clique. */
+.seg-painel-cotar .seg-cotar-so { display: none; }
+.seg-painel-cotar.is-cotando .seg-cotar-so { display: flex; }
+
+/* Lista do "Enviar cotação": abaixo do botão, separada por uma linha. */
+.seg-painel-cotar.is-cotando .seg-mps-lista {
+    margin: var(--space-4) 0 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+/* Bloco da seguradora: nome em cima, controles embaixo. */
+.seg-painel-cotar .seg-mps-item { flex-direction: column; align-items: stretch; }
+.seg-mps-linha { display: flex; align-items: center; gap: var(--space-2); }
+
+/* Com "Enviar cotação", cada seguradora vira um bloco: nome em cima, os
+   controles dela embaixo — fica claro de quem é cada "Enviar ao cliente".
+   Todas podem ir (a que recusou pela API pode aprovar no portal). */
+.seg-painel-cotar.is-cotando .seg-mps-item {
+    gap: 0;
+    padding: var(--space-3);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+}
+
+.seg-painel-cotar.is-cotando .seg-mps-linha {
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.seg-mps-controles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.seg-mps-incluir { margin: 0; font-size: var(--font-size-sm); font-weight: 600; }
+
+.seg-mps-controle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-800);
+}
+
+.seg-mps-controle small { color: var(--color-gray-500); }
+.seg-mps-controle a { display: inline-flex; align-items: center; gap: 4px; }
+.seg-mps-controle a svg { width: 16px; height: 16px; }
+.seg-mps-controle-acoes { display: inline-flex; gap: var(--space-2); }
+.seg-mps-sem-valor { font-size: var(--font-size-xs); color: var(--color-gray-500); }
+
+/* Biometria da seguradora (antes do PDF). */
+.seg-mps-biometria {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-warning);
+}
+.seg-mps-biometria svg { width: 16px; height: 16px; }
+.seg-mps-biometria.is-ok { color: var(--color-success); font-weight: 500; font-size: var(--font-size-xs); }
+.seg-mps-biometria.is-opcional { color: var(--color-gray-700); font-weight: 500; }
+
+.seg-painel-enviar {
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+/* Imobiliária: proposta em PDF — logo · seguradora · ações (sem valores: o PDF tem tudo). */
+.seg-oferta.seg-oferta--pdf {
+    grid-template-columns: 112px 1fr auto;
+    grid-template-areas: "marca info acao";
+}
+
+.seg-oferta-acao--pdf {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: var(--space-2);
+}
+
+@media (max-width: 960px) {
+    .seg-oferta.seg-oferta--pdf { grid-template-columns: 88px 1fr auto; }
+}
+
+@media (max-width: 560px) {
+    .seg-oferta.seg-oferta--pdf {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "marca"
+            "info"
+            "acao";
+    }
+    .seg-oferta--pdf .seg-oferta-acao--pdf { justify-content: stretch; }
+    .seg-oferta--pdf .seg-oferta-acao--pdf .btn { flex: 1; }
+}

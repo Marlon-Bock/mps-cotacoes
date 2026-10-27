@@ -1,0 +1,482 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Chat de chamado — estilo WhatsApp (light)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Container principal do chat ─────────────────────────────────────────── */
+
+.chamado-chat-box {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--color-gray-200);
+    background: #fff;
+    /* altura fixa para o chat rolar internamente */
+    height: 520px;
+    font-family: var(--font-base);
+}
+
+/* ── Área de mensagens (scrollável) ──────────────────────────────────────── */
+
+.chamado-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    background: #ece5dd;
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+}
+
+/* ── Thread ──────────────────────────────────────────────────────────────── */
+
+.chamado-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-top: auto; /* empurra mensagens para baixo quando poucas */
+}
+
+/* ── Separador de data ───────────────────────────────────────────────────── */
+
+.chamado-thread-date {
+    display: flex;
+    justify-content: center;
+    margin: var(--space-3) 0 var(--space-2);
+}
+
+.chamado-thread-date span {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: #54656f;
+    background: rgba(255,255,255,.9);
+    padding: 3px 12px;
+    border-radius: 99px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.08);
+    user-select: none;
+}
+
+/* ── Linha de mensagem ───────────────────────────────────────────────────── */
+
+.chamado-msg {
+    display: flex;
+    align-items: flex-start;   /* avatar no topo */
+    gap: 5px;
+}
+
+.chamado-msg--esquerda {
+    flex-direction: row;
+    align-self: flex-start;
+    max-width: 72%;
+}
+
+.chamado-msg--direita {
+    flex-direction: row;
+    align-self: flex-end;
+    max-width: 72%;
+}
+
+.chamado-msg.is-continuation {
+    margin-top: 1px;
+}
+
+/* ── Balão ───────────────────────────────────────────────────────────────── */
+
+.chamado-msg-bubble {
+    padding: 6px 10px 4px;
+    overflow-wrap: break-word;
+    position: relative;
+    min-width: 70px;
+    max-width: 100%;
+    flex-shrink: 0;     /* impede que o balão encolha e quebre texto sem necessidade */
+}
+
+/* MPS — branco, triângulo no canto superior esquerdo */
+.chamado-msg-bubble--esquerda {
+    background: #fff;
+    border-radius: 0 10px 10px 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+}
+
+.chamado-msg-bubble--esquerda.is-first::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -7px;
+    width: 0; height: 0;
+    border-top: 8px solid #fff;
+    border-left: 8px solid transparent;
+    z-index: 1;
+}
+
+.chamado-msg-bubble--esquerda.is-continuation {
+    border-radius: 10px;
+}
+
+/* Usuário — verde WhatsApp, triângulo no canto superior direito */
+.chamado-msg-bubble--direita {
+    background: #d9fdd3;
+    border-radius: 10px 0 10px 10px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+}
+
+.chamado-msg-bubble--direita.is-first::after {
+    content: '';
+    position: absolute;
+    top: 0; right: -7px;
+    width: 0; height: 0;
+    border-top: 8px solid #d9fdd3;
+    border-right: 8px solid transparent;
+    z-index: 1;
+}
+
+.chamado-msg-bubble--direita.is-continuation {
+    border-radius: 10px;
+}
+
+/* ── Nome remetente (só MPS, primeira mensagem do grupo) ─────────────────── */
+
+.chamado-msg-autor {
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    color: var(--color-primary-600);
+    margin-bottom: 2px;
+    white-space: nowrap;
+}
+
+/* ── Texto ───────────────────────────────────────────────────────────────── */
+
+.chamado-msg-texto {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    display: block;
+}
+
+/* ── Horário ─────────────────────────────────────────────────────────────── */
+
+.chamado-msg-meta {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2px;
+}
+
+.chamado-msg-data {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    white-space: nowrap;
+    line-height: 1;
+}
+
+/* ── Estado vazio ────────────────────────────────────────────────────────── */
+
+.chamado-thread-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    flex: 1;
+    text-align: center;
+}
+
+.chamado-thread-empty svg {
+    width: 36px;
+    height: 36px;
+    opacity: 0.3;
+    color: #54656f;
+}
+
+.chamado-thread-empty p {
+    font-size: var(--font-size-sm);
+    color: #54656f;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* ── Barra de input (estilo WhatsApp) ────────────────────────────────────── */
+
+.chamado-chat-input-bar {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-3);
+    background: #f0f2f5;
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.chamado-input-field {
+    flex: 1;
+    min-height: 40px;
+    max-height: 140px;
+    padding: 10px 14px;
+    border-radius: 24px;
+    border: none;
+    background: #fff;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+    resize: none;
+    outline: none;
+    line-height: 1.4;
+    font-family: var(--font-base);
+    overflow-y: auto;
+}
+
+.chamado-input-field::placeholder {
+    color: #8696a0;
+}
+
+.chamado-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary-600);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background-color .15s;
+}
+
+.chamado-send-btn:hover {
+    background: var(--color-primary-700, #6b0000);
+}
+
+.chamado-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.chamado-send-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* ── Chamado encerrado ───────────────────────────────────────────────────── */
+
+.chamado-chat-closed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: #f0f2f5;
+    border-top: 1px solid var(--color-gray-200);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.chamado-chat-closed svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    color: var(--color-gray-400);
+}
+
+/* ── Chat guiado do FAQ (fluxo estilo Leadster) ──────────────────────────── */
+
+.faq-fluxo-opcoes {
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+}
+
+/* Lista dentro da própria bolha — sem caixa por opção, só um divisor fino
+   entre linhas (mesma linguagem de .panel-list-item/.custom-select-option),
+   pra não parecer um formulário empilhado dentro do chat. */
+.faq-fluxo-opcao-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    width: 100%;
+    text-align: left;
+    padding: var(--space-2) var(--space-1);
+    border: none;
+    border-bottom: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--color-primary-700);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.faq-fluxo-opcao-btn:last-child {
+    border-bottom: none;
+}
+
+.faq-fluxo-opcao-btn:hover {
+    background: var(--color-primary-100);
+}
+
+.faq-fluxo-opcao-btn span {
+    flex: 1;
+    min-width: 0;
+}
+
+.faq-fluxo-opcao-btn .icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--color-primary-400);
+}
+
+.faq-fluxo-final-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    align-self: flex-start;
+    max-width: 72%;
+    margin-top: 2px;
+}
+
+/* "Digitando..." — 3 bolinhas pulsando, mostradas enquanto a bolha do bot
+   ainda não revelou o texto de verdade. */
+.chamado-msg-bubble.chamado-msg-typing {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 14px;
+}
+
+.chamado-msg-typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-gray-400);
+    animation: faq-fluxo-typing-bounce 1.2s infinite ease-in-out;
+}
+
+.chamado-msg-typing span:nth-child(2) { animation-delay: 0.15s; }
+.chamado-msg-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes faq-fluxo-typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* ── Botão flutuante + widget do chat (canto inferior direito) ──────────── */
+
+.faq-fluxo-launcher {
+    position: fixed;
+    right: var(--space-6);
+    bottom: var(--space-6);
+    z-index: 1100;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border: none;
+    border-radius: var(--radius-full);
+    background: var(--color-primary-600);
+    color: var(--color-white);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.faq-fluxo-launcher:hover {
+    background: var(--color-primary-700);
+}
+
+.faq-fluxo-launcher .icon {
+    width: 20px;
+    height: 20px;
+}
+
+.faq-fluxo-widget {
+    position: fixed;
+    right: var(--space-6);
+    bottom: var(--space-6);
+    z-index: 1200;
+    display: flex;
+    flex-direction: column;
+    width: 380px;
+    max-width: calc(100vw - var(--space-6) * 2);
+    height: 560px;
+    max-height: calc(100vh - var(--space-6) * 2);
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.faq-fluxo-widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-primary-600);
+    color: var(--color-white);
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.faq-fluxo-widget-header span {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.faq-fluxo-widget-header .icon {
+    width: 18px;
+    height: 18px;
+}
+
+.faq-fluxo-widget-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    cursor: pointer;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    opacity: 0.85;
+}
+
+.faq-fluxo-widget-close:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.faq-fluxo-widget-close .icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* Dentro do widget, o box do chat preenche o espaço restante — sem altura
+   fixa/borda/cantos próprios, já que o widget é quem dá a moldura. */
+.faq-fluxo-widget .chamado-chat-box {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+@media (max-width: 480px) {
+    .faq-fluxo-widget {
+        right: var(--space-3);
+        bottom: var(--space-3);
+        left: var(--space-3);
+        width: auto;
+        max-width: none;
+        height: calc(100vh - var(--space-3) * 2);
+    }
+
+    .faq-fluxo-launcher span {
+        display: none;
+    }
+}

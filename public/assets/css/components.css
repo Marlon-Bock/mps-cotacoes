@@ -1,0 +1,1175 @@
+/**
+ * Componentes reutilizáveis — botões, campos de formulário, alertas, cards.
+ * Toda tela do sistema deve reaproveitar estas classes em vez de criar novas.
+ */
+
+/* Utilitária global para esconder qualquer elemento via JS (toggle de classe). */
+.is-hidden { display: none !important; }
+
+/* ── Botões ─────────────────────────────────────────────────────────────── */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    height: 44px;
+    padding: 0 var(--space-5);
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), opacity var(--transition-fast);
+    white-space: nowrap;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: var(--color-primary-500);
+    color: var(--color-white);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--color-primary-600);
+    color: var(--color-white);
+}
+
+.btn-secondary {
+    background-color: var(--color-white);
+    color: var(--color-gray-800);
+    border: 1px solid var(--color-gray-300);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--color-gray-50);
+    border-color: var(--color-gray-400);
+    color: var(--color-gray-800);
+}
+
+.btn-danger-outline {
+    background-color: var(--color-white);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
+}
+
+.btn-danger-outline:hover:not(:disabled) {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.btn-link {
+    background: none;
+    color: var(--color-primary-600);
+    height: auto;
+    padding: 0;
+    font-weight: 500;
+    font-size: var(--font-size-sm);
+}
+
+.btn-link:hover:not(:disabled) {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+}
+
+.btn-sm {
+    height: 36px;
+    padding: 0 var(--space-4);
+    font-size: var(--font-size-sm);
+}
+
+/* ── Spinner (estado de carregamento do botão) ─────────────────────────── */
+
+.spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: var(--color-white);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+/* Estado de carregamento do botão — controlado via classList, nunca via style inline */
+.btn.is-loading [data-label] {
+    visibility: hidden;
+}
+
+.btn.is-loading .spinner {
+    display: inline-block;
+}
+
+.spinner-dark {
+    border-color: rgba(0, 0, 0, 0.15);
+    border-top-color: var(--color-gray-700);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Badge ──────────────────────────────────────────────────────────────── */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-600);
+}
+
+.badge-primary {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+}
+
+/* ── Campos de formulário ───────────────────────────────────────────────── */
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-5);
+}
+
+.field-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.field-label .field-error {
+    font-weight: 400;
+    font-size: var(--font-size-xs);
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.field-label .required {
+    color: var(--color-primary-600);
+    margin-left: 2px;
+}
+
+.field-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.field-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 var(--space-3);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    color: var(--color-gray-900);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.field-input::placeholder {
+    color: var(--color-gray-400);
+}
+
+textarea.field-input {
+    height: auto;
+    padding: var(--space-3);
+    resize: vertical;
+}
+
+.field-input:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.field-input.has-error {
+    border-color: var(--color-danger);
+}
+
+.field-input.has-error:focus {
+    box-shadow: 0 0 0 3px var(--color-danger-bg);
+}
+
+/* Ícone decorativo à esquerda do input */
+.field-input-icon {
+    position: absolute;
+    left: var(--space-3);
+    display: flex;
+    align-items: center;
+    color: var(--color-gray-400);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Ícone de status (validação) à direita do input */
+.field-input-status {
+    position: absolute;
+    right: var(--space-3);
+    display: flex;
+    align-items: center;
+}
+
+.field-input-status.is-valid { color: var(--color-success); }
+.field-input-status.is-error { color: var(--color-danger); }
+
+/* Padding extra quando o input tem ícone à esquerda */
+.field-input.has-icon {
+    padding-left: 2.5rem;
+}
+
+/* Padding extra quando o input tem ícone à esquerda E status à direita */
+.field-input.has-icon-both {
+    padding-right: 2.5rem;
+}
+
+.field-password-toggle {
+    position: absolute;
+    right: var(--space-3);
+    display: flex;
+    align-items: center;
+    color: var(--color-gray-500);
+}
+
+.field-password-toggle:hover {
+    color: var(--color-gray-700);
+}
+
+/* Toggle de senha — alterna ícones eye / eye-slash via classe, nunca via JS inline */
+.field-password-toggle .icon-eye-slash {
+    display: none;
+}
+
+.field-password-toggle.is-visible .icon-eye {
+    display: none;
+}
+
+.field-password-toggle.is-visible .icon-eye-slash {
+    display: block;
+}
+
+.field-error {
+    font-size: var(--font-size-xs);
+    color: var(--color-danger);
+    min-height: 1em;
+}
+
+/* Sem texto de erro, não reserva espaço nenhum — só ocupa altura quando
+   há uma mensagem de verdade pra mostrar (evita o "buraco" vazio no form). */
+.field-error:empty {
+    display: none;
+}
+
+/* ── Seletor de arquivo estilizado (substitui o <input type="file"> nativo) ── */
+
+.field-file-picker {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.field-file-picker-name {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.field-hint {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+/* ── Requisitos de senha (lista com ✕/✓ que fica verde conforme digita) ──── */
+
+.senha-requisitos {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: var(--space-2);
+    padding: 0;
+}
+
+.senha-req-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-danger);
+    transition: color var(--transition-fast);
+}
+
+.senha-req-item::before {
+    content: '✕';
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.senha-req-item.is-valid {
+    color: var(--color-success);
+}
+
+.senha-req-item.is-valid::before {
+    content: '✓';
+}
+
+/* Confirmação de senha batendo com a senha original */
+.field-input.is-match {
+    border-color: var(--color-success);
+}
+
+.field-input.is-match:focus {
+    box-shadow: 0 0 0 3px var(--color-success-bg);
+}
+
+.field-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+}
+
+.field-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-primary-600);
+    cursor: pointer;
+}
+
+.field-checkbox span {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+/* Duas .field lado a lado dentro de um form (ex: hora início/fim) */
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+}
+
+/* ── Switch (toggle liga/desliga) ───────────────────────────────────────── */
+
+/* Vários .switch agrupados lado a lado (ex: dias da semana, produtos afetados) —
+   nesse projeto toda seleção de múltiplos itens usa .switch, nunca checkbox nativo. */
+.switch-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+}
+
+.switch {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    user-select: none;
+}
+
+.switch input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.switch-track {
+    position: relative;
+    flex-shrink: 0;
+    width: 38px;
+    height: 21px;
+    background-color: var(--color-gray-300);
+    border-radius: 999px;
+    transition: background-color var(--transition-fast);
+}
+
+.switch-track::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 17px;
+    height: 17px;
+    background-color: var(--color-white);
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    transition: transform var(--transition-fast);
+}
+
+.switch input:checked + .switch-track {
+    background-color: var(--color-primary-600);
+}
+
+.switch input:checked + .switch-track::before {
+    transform: translateX(17px);
+}
+
+.switch input:disabled + .switch-track {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.switch input:focus-visible + .switch-track {
+    outline: 2px solid var(--color-primary-400);
+    outline-offset: 2px;
+}
+
+.switch-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+/* ── Alertas ────────────────────────────────────────────────────────────── */
+
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-5);
+}
+
+.alert-icon {
+    flex-shrink: 0;
+    font-size: var(--font-size-lg);
+    line-height: 1;
+}
+
+.alert-danger {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.alert-success {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.alert-warning {
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.alert-info {
+    background-color: var(--color-info-bg);
+    color: var(--color-gray-700);
+}
+
+/* Desistência do cliente — encerramento neutro, sem a carga de erro do danger. */
+.alert-desistencia {
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-700);
+    margin-bottom: 0;
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────── */
+
+.card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+/* ── Panel (card com header/body — reutilizado em dashboard e cotações) ──── */
+
+.panel {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-gray-200);
+    flex-wrap: wrap;
+}
+
+.panel-header h2 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.panel-body {
+    padding: var(--space-5);
+}
+
+.form-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.panel-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.panel-list-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.panel-list-item-info strong {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+}
+
+.panel-list-item-info span {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.panel-header-desc {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+/* ── Custom Select Dropdown ────────────────────────────────────────────────
+   Uso: <div data-custom-select data-placeholder="Selecione...">
+           <button class="custom-select-trigger field-input" ...>
+           <ul class="custom-select-dropdown" ...>
+           <input type="hidden" name="..." value="">
+        </div>
+   ────────────────────────────────────────────────────────────────────────── */
+
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.custom-select-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+}
+
+.custom-select-value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.custom-select-value.is-placeholder {
+    color: var(--color-gray-400);
+}
+
+.custom-select-caret {
+    flex-shrink: 0;
+    color: var(--color-gray-400);
+    transition: transform var(--transition-fast);
+    display: flex;
+    align-items: center;
+}
+
+.custom-select.is-open .custom-select-caret {
+    transform: rotate(180deg);
+}
+
+.custom-select.is-open .custom-select-trigger {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.custom-select-trigger.has-error {
+    border-color: var(--color-danger);
+}
+
+.custom-select-trigger.has-error:focus {
+    box-shadow: 0 0 0 3px var(--color-danger-bg);
+}
+
+.custom-select-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    right: 0;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+    z-index: 200;
+    max-height: 232px;
+    overflow-y: auto;
+    display: none;
+    padding: var(--space-1) 0;
+}
+
+.custom-select.is-flipped .custom-select-dropdown {
+    top: auto;
+    bottom: calc(100% + 5px);
+}
+
+.custom-select.is-open .custom-select-dropdown {
+    display: block;
+    animation: selectFadeIn 0.12s ease;
+}
+
+@keyframes selectFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.custom-select-option {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    line-height: 1.5;
+}
+
+.custom-select-option.is-placeholder {
+    color: var(--color-gray-400);
+}
+
+.custom-select-option.is-focused,
+.custom-select-option:hover {
+    background-color: var(--color-gray-50);
+}
+
+.custom-select-option.is-selected {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+    font-weight: 600;
+}
+
+.custom-select-option.is-selected.is-focused {
+    background-color: var(--color-primary-200, var(--color-primary-100));
+}
+
+/* Scrollbar sutil dentro do dropdown */
+@supports not selector(::-webkit-scrollbar) {
+    .custom-select-dropdown { scrollbar-width: thin; scrollbar-color: var(--color-primary-800) transparent; }
+}
+.custom-select-dropdown::-webkit-scrollbar { width: 4px; }
+.custom-select-dropdown::-webkit-scrollbar-track { background: transparent; }
+.custom-select-dropdown::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, var(--color-primary-700) 0%, var(--color-primary-900) 100%);
+    border-radius: 4px;
+}
+
+/* ── Date Picker — mesmo esqueleto visual do custom-select acima ─────────────
+   ────────────────────────────────────────────────────────────────────────── */
+
+.date-picker {
+    position: relative;
+    width: 100%;
+}
+
+.date-picker-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+}
+
+.date-picker-value {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.date-picker-value.is-placeholder {
+    color: var(--color-gray-400);
+}
+
+.date-picker.is-open .date-picker-trigger {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.date-picker-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 264px;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+    z-index: 200;
+    display: none;
+    padding: var(--space-3);
+}
+
+.date-picker.is-flipped .date-picker-dropdown {
+    top: auto;
+    bottom: calc(100% + 5px);
+}
+
+.date-picker.is-open .date-picker-dropdown {
+    display: block;
+    animation: selectFadeIn 0.12s ease;
+}
+
+.date-picker-cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+}
+
+.date-picker-month-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-800);
+    text-transform: capitalize;
+}
+
+.date-picker-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-md);
+    color: var(--color-gray-500);
+    transition: background-color var(--transition-fast);
+}
+
+.date-picker-nav:hover {
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-700);
+}
+
+.date-picker-nav-icon {
+    display: flex;
+}
+
+.date-picker-nav-prev { transform: rotate(90deg); }
+.date-picker-nav-next { transform: rotate(-90deg); }
+
+.date-picker-weekdays,
+.date-picker-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.date-picker-weekdays span {
+    text-align: center;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    padding-bottom: var(--space-1);
+}
+
+.date-picker-day {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.date-picker-day.is-outside {
+    color: var(--color-gray-300);
+}
+
+.date-picker-day:hover {
+    background-color: var(--color-gray-50);
+}
+
+.date-picker-day.is-today {
+    font-weight: 600;
+    color: var(--color-primary-600);
+}
+
+.date-picker-day.is-selected {
+    background-color: var(--color-primary-500);
+    color: var(--color-white);
+    font-weight: 600;
+}
+
+.date-picker-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: var(--space-2);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.date-picker-footer-btn {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-primary-600);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+}
+
+.date-picker-footer-btn:hover {
+    background-color: var(--color-gray-50);
+}
+
+/* ── Time Picker — mesmo esqueleto visual do date-picker acima, mas com
+   duas colunas roláveis (horas/minutos) no lugar do calendário ──────────── */
+
+.time-picker {
+    position: relative;
+    width: 100%;
+}
+
+.time-picker-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+}
+
+.time-picker-value {
+    flex: 1;
+    min-width: 0;
+}
+
+.time-picker-value.is-placeholder {
+    color: var(--color-gray-400);
+}
+
+.time-picker.is-open .time-picker-trigger {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px var(--color-primary-100);
+}
+
+.time-picker-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 160px;
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10), 0 1px 4px rgba(0, 0, 0, 0.06);
+    z-index: 200;
+    display: none;
+    padding: var(--space-3);
+}
+
+.time-picker.is-flipped .time-picker-dropdown {
+    top: auto;
+    bottom: calc(100% + 5px);
+}
+
+.time-picker.is-open .time-picker-dropdown {
+    display: block;
+    animation: selectFadeIn 0.12s ease;
+}
+
+.time-picker-cols {
+    display: flex;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+
+.time-picker-col {
+    flex: 1;
+    max-height: 176px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    scroll-behavior: smooth;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    .time-picker-col { scrollbar-width: thin; scrollbar-color: var(--color-primary-800) transparent; }
+}
+.time-picker-col::-webkit-scrollbar { width: 4px; }
+.time-picker-col::-webkit-scrollbar-track { background: transparent; }
+.time-picker-col::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, var(--color-primary-700) 0%, var(--color-primary-900) 100%);
+    border-radius: 4px;
+}
+
+.time-picker-opt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.time-picker-opt:hover {
+    background-color: var(--color-gray-50);
+}
+
+.time-picker-opt.is-selected {
+    background-color: var(--color-primary-500);
+    color: var(--color-white);
+    font-weight: 600;
+}
+
+/* ── Select nativo estilizado como field-input ────────────────────────────── */
+
+select.field-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 256 256'%3E%3Cpath fill='%236b7280' d='m213.66 101.66-80 80a8 8 0 0 1-11.32 0l-80-80a8 8 0 0 1 11.32-11.32L128 164.69l74.34-74.35a8 8 0 0 1 11.32 11.32Z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--space-3) center;
+    padding-right: 2.25rem;
+    cursor: pointer;
+}
+
+select.field-input.has-icon {
+    padding-left: 2.5rem;
+}
+
+/* ── Responsivo — ajustes globais de componentes em telas pequenas ───────── */
+
+@media (max-width: 640px) {
+    .btn {
+        height: 42px;
+        padding: 0 var(--space-4);
+    }
+}
+
+/* ── Empty state (usado em notificações, listas vazias) ─────────────────── */
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-6) var(--space-4);
+    color: var(--color-gray-500);
+}
+
+.empty-state-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--space-3);
+    border-radius: 50%;
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+}
+
+.empty-state p {
+    font-size: var(--font-size-sm);
+}
+
+/* ── Modal (CRUDs administrativos — FAQ, Imobiliárias, Usuários, Campanhas) ── */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+}
+
+.modal[hidden] {
+    display: none;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 26, 26, 0.5);
+}
+
+.modal-dialog {
+    position: relative;
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.modal-header h3 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-gray-500);
+    display: flex;
+    width: 16px;
+    height: 16px;
+}
+
+.modal-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+/* .modal-body já espaça os filhos via gap — a margem própria de .field
+   (pensada pra formulários soltos) só duplicava o espaço entre campos. */
+.modal-body .field {
+    margin-bottom: 0;
+}
+
+/* Variante sem padding — pro conteúdo (ex: chat box) encostar nas bordas
+   do modal e rolar por conta própria, sem a moldura de espaçamento padrão. */
+.modal-body.modal-body-flush {
+    padding: 0;
+    overflow: hidden;
+}
+
+.modal-footer {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+/* Ação destrutiva (Excluir) sempre isolada à esquerda quando dividir o rodapé
+   com Cancelar/Salvar — evita clique acidental perto do par confirmar/cancelar. */
+.modal-footer > .btn-danger-outline:first-child {
+    margin-right: auto;
+}
+
+/* ── Modal — popup de campanha (imagem retrato 17:24, full-bleed) ── */
+
+.modal-campanha-popup .modal-dialog {
+    max-width: 560px;
+    background: transparent;
+    box-shadow: none;
+}
+
+.modal-campanha-popup-link {
+    display: block;
+    line-height: 0;
+}
+
+.modal-campanha-popup img {
+    width: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: var(--radius-lg);
+}
+
+.modal-campanha-popup-obs-btn {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 32px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-full);
+    background: rgba(26, 26, 26, 0.55);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.modal-campanha-popup-obs-btn .icon {
+    width: 16px;
+    height: 16px;
+}
+
+.modal-campanha-popup-obs-btn[hidden] {
+    display: none;
+}
+
+.modal-campanha-obs .modal-body p {
+    white-space: pre-line;
+    line-height: 1.5;
+}
+
+.modal-campanha-popup .modal-close {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    background: rgba(26, 26, 26, 0.55);
+    color: var(--color-white);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Verificação em duas etapas da conta (cadastros/_partials/dois-fatores-conta). */
+.df-conta { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); }
+.df-conta-status { display: inline-flex; align-items: center; gap: 6px; font-size: var(--font-size-sm); font-weight: 600; color: var(--color-warning); }
+.df-conta-status.is-ativo { color: var(--color-success); }
+.df-conta-status svg { width: 16px; height: 16px; }
+.df-conta-detalhe { font-size: var(--font-size-xs); color: var(--color-gray-500); }
+.df-conta .btn { margin-top: var(--space-1); }

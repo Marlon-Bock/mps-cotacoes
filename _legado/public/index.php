@@ -1,0 +1,393 @@
+<?php
+/**
+ * Front Controller — único ponto de entrada do sistema.
+ * O Nginx direciona todas as requisições para cá.
+ * O Herd serve este diretório (public/) automaticamente.
+ */
+
+require_once dirname(__DIR__) . '/src/bootstrap.php';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// URLs LEGADAS (sistema antigo) — redireciona para as rotas atuais
+// ─────────────────────────────────────────────────────────────────────────────
+$_LEGACY_REDIRECTS = [
+    '/index.php'       => '/',
+    '/login.php'        => '/login',
+    '/admin/index.php'  => '/admin',
+    '/admin/login.php'  => '/login',
+];
+
+$_legacyPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+
+if (isset($_LEGACY_REDIRECTS[$_legacyPath])) {
+    header('Location: ' . $_LEGACY_REDIRECTS[$_legacyPath], true, 301);
+    exit;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 1 — ACESSO (público)
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',  '/login',                   'pages/login.php');
+route('GET',  '/esqueceu-senha',          'pages/esqueceu-senha.php');
+route('GET',  '/recuperar-senha/{token}', 'pages/recuperar-senha.php');
+route('GET',  '/sessao-expirada',         'pages/sessao-expirada.php');
+route('GET+POST', '/verificacao',         'pages/verificacao.php');
+route('POST', '/logout',                  'pages/logout.php');
+
+// Endpoints AJAX do módulo de acesso
+route('POST', '/api/auth/login',            'includes/acao/login.php');
+route('POST', '/api/auth/esqueceu-senha',   'includes/acao/esqueceu-senha.php');
+route('POST', '/api/auth/recuperar-senha',  'includes/acao/recuperar-senha.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 2 — DASHBOARD
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET', '/',      'pages/index.php');          // imobiliária
+route('GET', '/admin', 'pages/admin/index.php');    // admin/MPS
+route('GET', '/api/admin/popup-cotacoes-em-analise', 'includes/acao/admin-popup-cotacoes-em-analise.php');
+route('POST', '/api/novidade-incendio/visto', 'includes/acao/novidade-incendio-visto.php');
+
+route('GET', '/403', 'pages/errors/403.php');
+route('GET', '/404', 'pages/errors/404.php');
+
+// Manifest do PWA — extensão .webmanifest (não .json) porque o Nginx
+// bloqueia por extensão qualquer URL terminada em .json, mesmo servida via
+// PHP (ver includes/manifest.php e /etc/nginx/snippets/samiblock.conf).
+route('GET', '/manifest\.webmanifest', 'includes/manifest.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PAINEL DE EXIBIÇÃO (TV da empresa) — login e conta próprios
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET', '/painel/login',       'pages/painel/login.php');
+route('GET', '/painel',             'pages/painel/index.php');
+route('GET', '/api/painel/dados',   'includes/acao/painel-dados.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 3 — COTAÇÕES (imobiliária)
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/cotacoes',                   'pages/cotacoes.php');
+route('GET',      '/api/cotacoes/listar',         'includes/acao/cotacoes-listar.php');
+route('GET+POST', '/cotacao/fianca/residencial', 'pages/cotacao/fianca/residencial.php');
+route('GET+POST', '/cotacao/fianca/comercial',   'pages/cotacao/fianca/comercial.php');
+route('POST',     '/api/cotacao/fianca',         'includes/acao/cotacao-fianca.php');
+route('GET',      '/api/cotacao/imovel-buscar',  'includes/acao/cotacao-imovel-buscar.php');
+route('GET+POST', '/cotacao/auto',               'pages/cotacao/auto/index.php');
+route('POST',     '/api/cotacao/auto',           'includes/acao/cotacao-auto.php');
+route('GET',      '/api/fipe',                   'includes/acao/fipe.php');
+route('GET',      '/cotacao/rascunhos',          'pages/cotacao/rascunhos.php');
+route('POST',     '/api/cotacao/rascunho/salvar',  'includes/acao/cotacao-rascunho-salvar.php');
+route('POST',     '/api/cotacao/rascunho/excluir', 'includes/acao/cotacao-rascunho-excluir.php');
+route('GET+POST', '/cotacao/titulo',             'pages/cotacao/titulo/index.php');
+route('POST',     '/api/cotacao/titulo',         'includes/acao/cotacao-titulo.php');
+route('POST',     '/api/cotacao/titulo/{protocolo}/proposta-boleto', 'includes/acao/cotacao-titulo-proposta-boleto.php');
+route('POST',     '/api/cotacao/titulo/{protocolo}/pagar',           'includes/acao/cotacao-titulo-pagar.php');
+route('POST',     '/api/cotacao/titulo/{protocolo}/certificado',     'includes/acao/cotacao-titulo-certificado.php');
+route('GET+POST', '/cotacao/condominial',        'pages/cotacao/condominial/index.php');
+route('POST',     '/api/cotacao/condominial',    'includes/acao/cotacao-condominial.php');
+route('GET',      '/cotacao/residencial',        'pages/cotacao/residencial/index.php');
+route('POST',     '/api/cotacao/residencial',    'includes/acao/cotacao-residencial.php');
+route('GET+POST', '/cotacao/incendio',                   'pages/cotacao/incendio/index.php');
+route('POST',     '/api/cotacao/incendio',               'includes/acao/cotacao-incendio.php');
+route('GET',      '/api/cotacao/incendio/imovel-buscar', 'includes/acao/cotacao-incendio-imovel-buscar.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/iniciar-analise', 'includes/acao/cotacao-incendio-imovel-iniciar-analise.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/proposta',        'includes/acao/cotacao-incendio-imovel-proposta.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/recusar-mps',     'includes/acao/cotacao-incendio-imovel-recusar-mps.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/recusar-cliente', 'includes/acao/cotacao-incendio-imovel-recusar-cliente.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/desistir',        'includes/acao/cotacao-incendio-imovel-desistir.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/aprovar',         'includes/acao/cotacao-incendio-imovel-aprovar.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/recusar',         'includes/acao/cotacao-incendio-imovel-recusar.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/cotacao',         'includes/acao/cotacao-incendio-imovel-cotacao.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/cotacao-aprovar', 'includes/acao/cotacao-incendio-imovel-cotacao-aprovar.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/cotacao-recusar', 'includes/acao/cotacao-incendio-imovel-cotacao-recusar.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/cotacao-recusar-cliente', 'includes/acao/cotacao-incendio-imovel-cotacao-recusar-cliente.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/alteracao-solicitar', 'includes/acao/cotacao-incendio-imovel-alteracao-solicitar.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/proposta-alteracao-solicitar', 'includes/acao/cotacao-incendio-imovel-proposta-alteracao-solicitar.php');
+route('POST', '/api/cotacao/incendio/{protocolo}/imovel/{imovel_id}/apolice',         'includes/acao/cotacao-incendio-imovel-apolice.php');
+// API das seguradoras (Fiança) — ver src/helpers/api.php.
+// Callback da Pottencial Fiança PJ (público, com token na URL).
+route('POST', '/api/webhook/pottencial-pj/{token}',                                  'includes/acao/api-pottencial-pj-callback.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/atualizar',                    'includes/acao/fianca-seguradoras-atualizar.php');
+route('GET',  '/api/cotacao/fianca/{protocolo}/seguradoras/fila',                         'includes/acao/fianca-seguradoras-fila.php');
+route('GET',  '/api/cotacao/fianca/{protocolo}/seguradoras/situacao',                     'includes/acao/fianca-seguradoras-situacao.php');
+route('GET',  '/api/cotacao/fianca/{protocolo}/seguradoras/biometria-link',               'includes/acao/fianca-seguradoras-biometria-link.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/propostas',                    'includes/acao/fianca-seguradoras-propostas.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/propostas/recusar',            'includes/acao/fianca-seguradoras-propostas-recusar.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/apolice/enviar',               'includes/acao/fianca-seguradoras-apolice-enviar.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/proposta/enviar',              'includes/acao/fianca-seguradoras-proposta-enviar.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/corrigir',                     'includes/acao/fianca-seguradoras-corrigir.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/{seguradora}/emitir',          'includes/acao/fianca-seguradoras-emitir.php');
+route('POST', '/api/cotacao/fianca/{protocolo}/seguradoras/{seguradora}/reanalisar',      'includes/acao/fianca-seguradoras-reanalisar.php');
+route('GET',  '/api/cotacao/fianca/{protocolo}/seguradoras/{seguradora}/biometria',       'includes/acao/fianca-seguradoras-biometria.php');
+route('GET',  '/api/cotacao/fianca/{protocolo}/seguradoras/{seguradora}/documento/{tipo}', 'includes/acao/fianca-seguradoras-documento.php');
+route('POST',     '/api/cotacao/{protocolo}/mensagem',       'includes/acao/cotacao-mensagem.php');
+route('POST',     '/api/cotacao/{protocolo}/mensagem-anexo', 'includes/acao/cotacao-mensagem-anexo.php');
+route('GET',      '/api/cotacao/{protocolo}/mensagens',      'includes/acao/cotacao-mensagens-listar.php');
+route('GET',      '/api/cotacao/{protocolo}/historico',      'includes/acao/cotacao-historico-listar.php');
+route('GET',      '/api/cotacao/unread-lote',                 'includes/acao/cotacao-unread-lote.php');
+route('POST',     '/api/cotacao/{protocolo}/aprovar',        'includes/acao/cotacao-aprovar.php');
+route('POST',     '/api/cotacao/{protocolo}/recusar',        'includes/acao/cotacao-recusar.php');
+route('POST',     '/api/cotacao/{protocolo}/pre-analise',    'includes/acao/cotacao-pre-analise.php');
+route('POST',     '/api/cotacao/{protocolo}/iniciar-analise','includes/acao/cotacao-iniciar-analise.php');
+route('POST',     '/api/cotacao/{protocolo}/biometria',      'includes/acao/cotacao-biometria.php');
+route('POST',     '/api/cotacao/{protocolo}/proposta',       'includes/acao/cotacao-proposta.php');
+route('POST',     '/api/cotacao/{protocolo}/recusar-mps',    'includes/acao/cotacao-recusar-mps.php');
+route('POST',     '/api/cotacao/{protocolo}/recusar-cliente','includes/acao/cotacao-recusar-cliente.php');
+route('POST',     '/api/cotacao/{protocolo}/desistir',       'includes/acao/cotacao-desistir.php');
+route('POST',     '/api/cotacao/{protocolo}/recotar',        'includes/acao/cotacao-fianca-recotar.php');
+route('GET',      '/api/cotacao/{protocolo}/pdf',              'includes/acao/cotacao-fianca-pdf.php');
+route('GET',      '/api/cotacao/{protocolo}/titulo-pdf',        'includes/acao/cotacao-titulo-pdf.php');
+route('GET',      '/api/cotacao/{protocolo}/condominial-pdf',   'includes/acao/cotacao-condominial-pdf.php');
+route('GET', '/cotacao/fianca/{protocolo}',      'pages/cotacao/fianca/detalhe.php');
+route('GET', '/cotacao/auto/{protocolo}',        'pages/cotacao/auto/detalhe.php');
+route('GET', '/cotacao/titulo/{protocolo}',      'pages/cotacao/titulo/detalhe.php');
+route('GET', '/cotacao/condominial/{protocolo}', 'pages/cotacao/condominial/detalhe.php');
+route('GET', '/cotacao/residencial/{protocolo}', 'pages/cotacao/residencial/detalhe.php');
+route('GET', '/cotacao/incendio/{protocolo}',    'pages/cotacao/incendio/detalhe.php');
+route('GET+POST', '/cotacao/{protocolo}',        'pages/cotacao.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 3.1 — EMBED (cotação sem login, embutida no sistema do cliente)
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET', '/embed', 'pages/embed.php');
+route('POST', '/api/embed/ativar', 'includes/acao/embed-ativar.php');
+
+route('GET', '/embed/{embed_token}/fianca/residencial', 'pages/cotacao/embed/fianca-residencial.php');
+route('GET', '/embed/{embed_token}/fianca/comercial',   'pages/cotacao/embed/fianca-comercial.php');
+route('GET', '/embed/{embed_token}/auto',               'pages/cotacao/embed/auto.php');
+route('GET', '/embed/{embed_token}/condominial',        'pages/cotacao/embed/condominial.php');
+route('GET', '/embed/{embed_token}/titulo',              'pages/cotacao/embed/titulo.php');
+
+route('POST', '/api/embed/{embed_token}/cotacao/fianca',      'includes/acao/cotacao-fianca.php');
+route('POST', '/api/embed/{embed_token}/cotacao/auto',        'includes/acao/cotacao-auto.php');
+route('POST', '/api/embed/{embed_token}/cotacao/condominial', 'includes/acao/cotacao-condominial.php');
+route('POST', '/api/embed/{embed_token}/cotacao/titulo',      'includes/acao/cotacao-titulo.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 4 — COTAÇÕES (admin)
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET', '/admin/cotacoes',                              'pages/admin/cotacoes.php');
+route('GET', '/api/admin/cotacoes/listar',                   'includes/acao/admin-cotacoes-listar.php');
+route('GET', '/api/admin/cotacoes/exportar',                 'includes/acao/admin-cotacoes-exportar.php');
+route('GET', '/admin/cotacao/fianca/{protocolo}',          'pages/admin/cotacao/fianca/detalhe.php');
+route('GET', '/admin/cotacao/fianca/{protocolo}/seguradoras', 'pages/admin/cotacao/fianca/seguradoras.php');
+route('GET', '/admin/cotacao/residencial/{protocolo}/seguradoras', 'pages/admin/cotacao/fianca/seguradoras.php');
+route('GET', '/admin/cotacao/residencial/{protocolo}',     'pages/admin/cotacao/residencial/detalhe.php');
+route('GET', '/admin/cotacao/auto/{protocolo}',            'pages/admin/cotacao/auto/detalhe.php');
+route('GET', '/admin/cotacao/titulo/{protocolo}',          'pages/admin/cotacao/titulo/detalhe.php');
+route('GET', '/admin/cotacao/condominial/{protocolo}',     'pages/admin/cotacao/condominial/detalhe.php');
+route('GET', '/admin/cotacao/incendio/{protocolo}',         'pages/admin/cotacao/incendio/detalhe.php');
+route('GET',  '/admin/leads',                     'pages/admin/leads.php');
+route('GET',  '/api/admin/leads/listar',          'includes/acao/admin-leads-listar.php');
+route('GET',  '/admin/leads/{protocolo}',         'pages/admin/leads/detalhe.php');
+route('GET',      '/admin/pipeline',               'pages/admin/pipeline.php');
+route('GET',      '/api/admin/pipeline/listar',    'includes/acao/admin-pipeline-listar.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 5 — GESTÃO (admin)
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/admin/imobiliarias',                  'pages/admin/imobiliarias.php');
+route('GET+POST', '/admin/imobiliarias/criar',            'pages/admin/imobiliarias/criar.php');
+route('GET+POST', '/admin/imobiliarias/{slug}/editar',      'pages/admin/imobiliarias/editar.php');
+route('GET',      '/admin/imobiliarias/{slug}/usuarios',    'pages/admin/imobiliarias/usuarios.php');
+route('GET+POST', '/admin/imobiliarias/{slug}/usuarios/criar',                  'pages/admin/imobiliarias/usuarios/criar.php');
+route('GET+POST', '/admin/imobiliarias/{slug}/usuarios/{usuario_slug}/editar',  'pages/admin/imobiliarias/usuarios/editar.php');
+route('GET',      '/api/admin/imobiliarias/buscar-institucional', 'includes/acao/admin-imobiliarias-buscar-institucional.php');
+route('POST',     '/api/admin/imobiliarias/testar-samiloca',      'includes/acao/admin-imobiliarias-testar-samiloca.php');
+route('GET',      '/api/admin/imobiliarias/listar', 'includes/acao/admin-imobiliarias-listar.php');
+route('POST',     '/api/admin/imobiliarias/usuario-toggle-ativo', 'includes/acao/admin-imobiliarias-usuario-toggle-ativo.php');
+route('GET',      '/admin/usuarios',                      'pages/admin/usuarios.php');
+// Log de notificações WhatsApp (Z-API) — acesso só por link direto, sem item no menu.
+route('GET',      '/admin/log',                            'pages/admin/log.php');
+route('GET',      '/admin/sistema-erros',                   'pages/admin/sistema-erros.php');
+route('POST',     '/api/admin/diagnostico-permissoes',       'includes/acao/admin-diagnostico-permissoes.php');
+route('POST',     '/api/admin/gerar-erro-teste',              'includes/acao/admin-gerar-erro-teste.php');
+route('GET',       '/api/admin/sistema-erros/listar',           'includes/acao/admin-sistema-erros-listar.php');
+route('POST',      '/api/admin/sistema-erros/{id}/resolver',    'includes/acao/admin-sistema-erro-resolver.php');
+route('GET+POST', '/admin/usuarios/criar',                'pages/admin/usuarios/criar.php');
+route('GET+POST', '/admin/usuarios/{slug}/editar',        'pages/admin/usuarios/editar.php');
+route('GET',      '/api/admin/usuarios/listar',            'includes/acao/admin-usuarios-listar.php');
+route('POST',     '/api/admin/usuarios/excluir',            'includes/acao/admin-usuarios-excluir.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO — TAREFAS (gerenciador interno da equipe MPS)
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',  '/admin/tarefas',                     'pages/admin/tarefas.php');
+route('GET',  '/api/admin/tarefas/listar',          'includes/acao/admin-tarefas-listar.php');
+route('GET',  '/api/admin/tarefas/obter',           'includes/acao/admin-tarefas-obter.php');
+route('POST', '/api/admin/tarefas/salvar',          'includes/acao/admin-tarefas-salvar.php');
+route('POST', '/api/admin/tarefas/status',          'includes/acao/admin-tarefas-status.php');
+route('POST', '/api/admin/tarefas/responsaveis',    'includes/acao/admin-tarefas-responsaveis.php');
+route('POST', '/api/admin/tarefas/prazo',           'includes/acao/admin-tarefas-prazo.php');
+route('POST', '/api/admin/tarefas/anexo',           'includes/acao/admin-tarefas-anexo.php');
+route('GET',  '/api/admin/tarefas/anexos',          'includes/acao/admin-tarefas-anexos-listar.php');
+route('POST', '/api/admin/tarefas/anexo/excluir',   'includes/acao/admin-tarefas-anexo-excluir.php');
+route('GET',  '/api/admin/tarefas/detalhe',         'includes/acao/admin-tarefas-detalhe.php');
+route('POST', '/api/admin/tarefas/comentar',        'includes/acao/admin-tarefas-comentar.php');
+route('POST', '/api/admin/tarefas/criar-rapido',    'includes/acao/admin-tarefas-criar-rapido.php');
+route('POST', '/api/admin/tarefas/campo',           'includes/acao/admin-tarefas-campo.php');
+route('POST', '/api/admin/tarefas/excluir',         'includes/acao/admin-tarefas-excluir.php');
+route('POST', '/api/admin/tarefas/mover',           'includes/acao/admin-tarefas-mover.php');
+route('POST', '/api/admin/tarefas/arquivar',        'includes/acao/admin-tarefas-arquivar.php');
+route('GET',  '/api/admin/tarefas/subitens/listar',  'includes/acao/admin-tarefas-subitens-listar.php');
+route('POST', '/api/admin/tarefas/subitens/salvar',  'includes/acao/admin-tarefas-subitens-salvar.php');
+route('POST', '/api/admin/tarefas/subitens/excluir', 'includes/acao/admin-tarefas-subitens-excluir.php');
+route('GET',  '/api/admin/tarefas/dashboard',       'includes/acao/admin-tarefas-dashboard.php');
+route('GET',  '/api/admin/tarefas/config',          'includes/acao/admin-tarefas-config-listar.php');
+route('POST', '/api/admin/tarefas/config/salvar',   'includes/acao/admin-tarefas-config-salvar.php');
+route('POST', '/api/admin/tarefas/config/excluir',  'includes/acao/admin-tarefas-config-excluir.php');
+route('POST', '/api/admin/tarefas/usuario-setores', 'includes/acao/admin-tarefas-usuario-setores.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 6 — RODÍZIO
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET+POST', '/admin/rodizio', 'pages/admin/rodizio.php');
+route('GET',  '/api/admin/rodizio/listar',    'includes/acao/admin-rodizio-listar.php');
+route('POST', '/api/admin/rodizio/adicionar', 'includes/acao/admin-rodizio-adicionar.php');
+route('POST', '/api/admin/rodizio/remover',   'includes/acao/admin-rodizio-remover.php');
+route('POST', '/api/admin/rodizio/reordenar', 'includes/acao/admin-rodizio-reordenar.php');
+route('POST', '/api/admin/rodizio/status',    'includes/acao/admin-rodizio-status.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 7 — VISITAS
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/admin/visitas',              'pages/admin/visitas.php');            // Histórico
+route('GET',      '/admin/visitas/relatorio',    'pages/admin/visitas/relatorio.php');   // aceita ?ag_id=N
+route('GET',      '/admin/visitas/agendar',      'pages/admin/visitas/agendar.php');
+route('GET',      '/admin/horarios',              'pages/admin/horarios-atendimento.php');
+route('POST',     '/api/admin/horario-atendimento/salvar',    'includes/acao/admin-horario-salvar.php');
+route('POST',     '/api/admin/bloqueio-horario/salvar',       'includes/acao/admin-bloqueio-salvar.php');
+route('POST',     '/api/admin/bloqueio-horario/excluir',      'includes/acao/admin-bloqueio-excluir.php');
+
+// Histórico
+route('GET', '/api/admin/visitas-historico/listar', 'includes/acao/admin-visitas-historico-listar.php');
+
+// Relatório
+route('GET',  '/api/admin/visitas-relatorio/listar',  'includes/acao/admin-visitas-relatorio-listar.php');
+route('POST', '/api/admin/visitas-relatorio/salvar',  'includes/acao/admin-visitas-relatorio-salvar.php');
+route('POST', '/api/admin/visitas-relatorio/excluir', 'includes/acao/admin-visitas-relatorio-excluir.php');
+
+// Agendar
+route('GET',  '/api/admin/visitas-agendar/listar',  'includes/acao/admin-visitas-agendar-listar.php');
+route('POST', '/api/admin/visitas-agendar/salvar',  'includes/acao/admin-visitas-agendar-salvar.php');
+route('POST', '/api/admin/visitas-agendar/excluir', 'includes/acao/admin-visitas-agendar-excluir.php');
+
+// Compartilhados entre Relatório, Histórico e Agendar (imobiliária + comissão + região)
+route('GET',      '/api/admin/visitas/imobiliaria-buscar', 'includes/acao/admin-visitas-imobiliaria-buscar.php');
+route('GET+POST', '/api/admin/visitas/comissao',            'includes/acao/admin-visitas-comissao.php');
+route('GET',      '/api/admin/visitas/regiao-listar',       'includes/acao/admin-visitas-regiao-listar.php');
+route('POST',     '/api/admin/visitas/regiao-criar',        'includes/acao/admin-visitas-regiao-criar.php');
+route('POST',     '/api/admin/visitas/regiao-excluir',      'includes/acao/admin-visitas-regiao-excluir.php');
+
+// Google OAuth (conectar/callback/desconectar), por atendente-alvo
+route('GET',  '/admin/visitas/google/conectar',        'includes/acao/admin-visitas-google-conectar.php');
+route('GET',  '/admin/visitas/google/callback',        'includes/acao/admin-visitas-google-callback.php');
+route('POST', '/api/admin/visitas/google-desconectar', 'includes/acao/admin-visitas-google-desconectar.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 8 — CHAMADOS
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/chamados',                      'pages/chamados.php');
+route('GET',      '/api/chamados/listar',          'includes/acao/chamados-listar.php');
+route('GET',      '/chamado/{protocolo}',                 'pages/chamado.php');
+route('GET',      '/api/chamado/{protocolo}/mensagens',   'includes/acao/chamado-mensagens.php');
+route('POST',     '/api/chamado/{protocolo}/responder',   'includes/acao/chamado-responder.php');
+route('POST',     '/api/chamado/{protocolo}/mensagem-anexo', 'includes/acao/chamado-mensagem-anexo.php');
+route('POST',     '/api/chamado/{protocolo}/encerrar',    'includes/acao/chamado-encerrar.php');
+route('GET+POST', '/chamados/novo',                'pages/chamados/novo.php');
+route('GET',      '/admin/chamados',       'pages/admin/chamados.php');
+route('GET',      '/api/admin/chamados/listar', 'includes/acao/admin-chamados-listar.php');
+route('GET',      '/admin/chamado/{protocolo}',   'pages/admin/chamado.php');
+route('GET',       '/api/admin/chamado/{protocolo}/mensagens',     'includes/acao/admin-chamado-mensagens.php');
+route('POST',      '/api/admin/chamado/{protocolo}/responder',     'includes/acao/admin-chamado-responder.php');
+route('POST',      '/api/admin/chamado/{protocolo}/mensagem-anexo', 'includes/acao/admin-chamado-mensagem-anexo.php');
+route('POST',      '/api/admin/chamado/{protocolo}/encerrar',      'includes/acao/admin-chamado-encerrar.php');
+route('POST',      '/api/admin/chamado/{protocolo}/atribuir',      'includes/acao/admin-chamado-atribuir.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 9 — CAMPANHAS
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/campanhas',              'pages/campanhas.php');
+route('GET',      '/admin/campanhas',        'pages/admin/campanhas.php');
+route('GET+POST', '/admin/campanhas/criar',  'pages/admin/campanhas/criar.php');
+route('GET+POST', '/admin/campanhas/{id}/editar', 'pages/admin/campanhas/editar.php');
+route('GET',  '/api/campanhas/listar',         'includes/acao/campanhas-listar.php');
+route('GET',  '/api/admin/campanhas/listar',   'includes/acao/admin-campanhas-listar.php');
+route('POST', '/api/admin/campanhas/excluir',  'includes/acao/admin-campanhas-excluir.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 10 — FAQ
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/faq',       'pages/faq.php');
+route('GET',      '/admin/faq', 'pages/admin/faq.php');
+route('GET',      '/api/admin/faq/listar',        'includes/acao/admin-faq-listar.php');
+route('POST',     '/api/admin/faq/bloco-salvar',  'includes/acao/admin-faq-bloco-salvar.php');
+route('POST',     '/api/admin/faq/bloco-excluir', 'includes/acao/admin-faq-bloco-excluir.php');
+route('POST',     '/api/admin/faq/item-salvar',   'includes/acao/admin-faq-item-salvar.php');
+route('POST',     '/api/admin/faq/item-excluir',  'includes/acao/admin-faq-item-excluir.php');
+
+// Fluxo de perguntas do FAQ (chat guiado estilo Leadster)
+route('GET',      '/admin/faq/fluxo',            'pages/admin/faq-fluxo.php');
+route('POST',     '/api/admin/faq-fluxo/salvar', 'includes/acao/admin-faq-fluxo-salvar.php');
+route('GET',      '/api/faq/fluxo',              'includes/acao/faq-fluxo-obter.php');
+route('POST',     '/api/faq/fluxo/sessao',       'includes/acao/faq-fluxo-sessao.php');
+route('GET',      '/admin/faq/atendimentos',              'pages/admin/faq-atendimentos.php');
+route('GET',      '/api/admin/faq-atendimentos/listar',   'includes/acao/admin-faq-atendimentos-listar.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 10.5 — USUÁRIOS (imobiliária)
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/usuarios',              'pages/usuarios.php');
+route('GET',      '/api/usuarios/listar',   'includes/acao/usuarios-listar.php');
+route('POST',     '/api/usuarios/excluir',  'includes/acao/usuarios-excluir.php');
+route('GET+POST', '/usuarios/criar',        'pages/usuarios/criar.php');
+route('GET+POST', '/usuarios/{slug}/editar', 'pages/usuarios/editar.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 11 — PERFIL
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET+POST', '/perfil', 'pages/perfil.php');
+// Alias dentro do namespace /admin — a página é a mesma (pages/perfil.php já
+// é role-aware: busca em `usuario` para admin, `users` para imobiliária), só
+// existe pra manter a URL consistente com o resto das rotas do admin.
+route('GET+POST', '/admin/perfil', 'pages/perfil.php');
+route('POST',      '/api/perfil',        'includes/acao/perfil-atualizar.php');
+route('POST',      '/api/perfil/avatar', 'includes/acao/perfil-avatar.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 12 — NOTIFICAÇÕES
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET', '/notificacoes',       'pages/notificacoes.php');
+route('GET', '/admin/notificacoes', 'pages/admin/notificacoes.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MÓDULO 13 — RELATÓRIOS
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET',      '/admin/gerenciador', 'pages/admin/gerenciador.php');
+route('GET',      '/admin/financeiro',            'pages/admin/financeiro.php');
+route('GET',      '/admin/financeiro/exportar',   'includes/acao/admin-financeiro-exportar.php');
+route('GET',      '/admin/financeiro/pdf',        'includes/acao/admin-financeiro-pdf.php');
+route('GET',      '/api/admin/financeiro/listar', 'includes/acao/admin-financeiro-listar.php');
+route('GET',      '/api/admin/gerenciador/stats', 'includes/acao/admin-gerenciador-stats.php');
+route('GET',      '/api/admin/gerenciador/tempos', 'includes/acao/admin-gerenciador-tempos.php');
+route('GET',      '/api/admin/gerenciador/timeline', 'includes/acao/admin-gerenciador-timeline.php');
+route('GET+POST', '/admin/comissoes',   'pages/admin/comissoes.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PÁGINAS INSTITUCIONAIS
+// ─────────────────────────────────────────────────────────────────────────────
+route('GET', '/politica-de-privacidade', 'pages/politica-de-privacidade.php');
+route('GET', '/termos-de-servico',       'pages/termos-de-servico.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INCLUI ENDPOINTS AJAX (POST direto, sem tela)
+// ─────────────────────────────────────────────────────────────────────────────
+route('POST', '/api/renovar-sessao',     'includes/acao/renovar-sessao.php');
+route('POST', '/api/notificacoes/lidas', 'includes/acao/notificacoes-lidas.php');
+route('GET',  '/api/notificacoes/resumo', 'includes/acao/notificacoes-resumo.php');
+route('GET',  '/api/notificacoes/listar', 'includes/acao/notificacoes-listar.php');
+route('GET',  '/api/admin/notificacoes/listar', 'includes/acao/admin-notificacoes-listar.php');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Despacha
+// ─────────────────────────────────────────────────────────────────────────────
+router_dispatch();

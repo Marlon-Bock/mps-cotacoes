@@ -1,0 +1,70 @@
+/* FAQ — usa somente tokens de tokens.css */
+
+/* Sem margin-bottom em .faq-search/.faq-bloco: .app-content já espaça as
+   seções via gap próprio (ver layout.css) — margem solta aqui só duplicava
+   o espaço entre a busca e os blocos, e entre blocos consecutivos. */
+.faq-search {
+    max-width: 420px;
+}
+
+.faq-bloco.is-hidden {
+    display: none;
+}
+
+.faq-itens {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.faq-item {
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.faq-item-pergunta {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-gray-50);
+    border: none;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    cursor: pointer;
+}
+
+.faq-item-caret {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+}
+
+.faq-item.is-open .faq-item-caret {
+    transform: rotate(180deg);
+}
+
+.faq-item-resposta {
+    display: none;
+    padding: var(--space-4);
+    color: var(--color-gray-700);
+    line-height: 1.6;
+}
+
+.faq-item.is-open .faq-item-resposta {
+    display: block;
+}
+
+.faq-item.is-hidden {
+    display: none;
+}
+
+.faq-vazio {
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+}

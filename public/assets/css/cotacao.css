@@ -1,0 +1,1111 @@
+/**
+ * Módulo 3 — Formulário de cotação (stepper, grid de campos, navegação).
+ * Compartilhado entre Fiança Residencial, Fiança Comercial e Seguro Auto.
+ */
+
+/* ── Container da página de cotação ───────────────────────────────────────
+   Limita a largura do formulário para não esticar campos em monitores
+   ultrawide. max-width alinhado ao início do app-content. */
+
+.cotacao-container {
+    width: 100%;
+}
+
+/* ── Layout 70/30 — formulário à esquerda, painel lateral à direita ────── */
+
+.form-layout-70-30 {
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    gap: var(--space-5);
+    align-items: start;
+}
+
+.form-layout-70-30 .form-layout-main,
+.form-layout-70-30 .form-layout-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.form-layout-70-30 .coberturas-extra {
+    grid-template-columns: 1fr;
+}
+
+.form-layout-70-30 .panel-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+/* ── Switch (toggle liga/desliga) ──────────────────────────────────────────
+   Estilos base (.switch, .switch-track, .switch-label) moraram em components.css
+   — o componente é usado fora de telas de cotação (login, usuários). Aqui só
+   ficam os arranjos específicos de cotação (grid de coberturas, garagem/portão). */
+
+/* Grid de switches — coberturas extras, garagem/portão, etc. */
+.switch-grid {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    gap: var(--space-5);
+    justify-content: start;
+}
+
+/* Linha com o switch + ícone de informação ao lado (fora do <label>,
+   pra clicar no ícone não disparar o toggle) */
+.switch-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+@media (max-width: 640px) {
+    .switch-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Tooltip de informação (ícone "i") ──────────────────────────────────── */
+
+.tooltip-info {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-gray-400);
+    cursor: help;
+    flex-shrink: 0;
+}
+
+.tooltip-info .icon {
+    width: 1em;
+    height: 1em;
+}
+
+.tooltip-info:hover,
+.tooltip-info:focus-visible {
+    color: var(--color-gray-600);
+}
+
+.tooltip-info::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    width: max-content;
+    max-width: 260px;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-gray-900);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 400;
+    line-height: 1.55;
+    text-align: left;
+    white-space: normal;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 4px) scale(0.97);
+    transform-origin: bottom center;
+    transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
+    z-index: 30;
+    pointer-events: none;
+}
+
+.tooltip-info::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--color-gray-900);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base);
+    z-index: 30;
+    pointer-events: none;
+}
+
+.tooltip-info:hover::after,
+.tooltip-info:focus-visible::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0) scale(1);
+}
+
+.tooltip-info:hover::before,
+.tooltip-info:focus-visible::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+.perm-produtos-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0 0 0 26px;
+    padding: var(--space-2);
+    background-color: var(--color-gray-50);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+}
+
+@media (max-width: 960px) {
+    .form-layout-70-30 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Breadcrumb/back nav ────────────────────────────────────────────────── */
+
+.page-back {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--space-2);
+}
+
+.page-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-gray-600);
+    font-weight: 500;
+    transition: color var(--transition-fast);
+}
+
+.page-back a:hover {
+    color: var(--color-primary-600);
+}
+
+
+/* ── Stepper — indicador de progresso ──────────────────────────────────── */
+
+.stepper-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-5);
+    background: linear-gradient(90deg, var(--color-primary-900) 0%, var(--color-gray-900) 100%);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: var(--space-4) var(--space-5);
+    margin-left: calc(-1 * var(--space-5));
+    margin-right: calc(-1 * var(--space-5));
+    margin-top: calc(-1 * var(--space-5));
+}
+
+.stepper-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+.stepper-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.5);
+    transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.stepper-step-label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: 0.2px;
+    transition: color var(--transition-fast);
+}
+
+.stepper-step.is-active .stepper-num {
+    background-color: var(--color-white);
+    border-color: var(--color-white);
+    color: var(--color-primary-900);
+}
+
+.stepper-step.is-active .stepper-step-label {
+    color: var(--color-white);
+}
+
+.stepper-step.is-done .stepper-num {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: var(--color-white);
+}
+
+.stepper-step.is-done .stepper-step-label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.stepper-connector {
+    flex: 1;
+    height: 2px;
+    background-color: rgba(255, 255, 255, 0.15);
+    margin: 0 var(--space-2);
+    transition: background-color var(--transition-base);
+    min-width: var(--space-3);
+}
+
+.stepper-connector.is-done {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Painéis dos steps ─────────────────────────────────────────────────── */
+
+.stepper-panel {
+    display: none;
+}
+
+.stepper-panel.is-active {
+    display: block;
+}
+
+/* ── Seção interna de um step ──────────────────────────────────────────── */
+
+/* flex-column + gap garante espaçamento uniforme entre TODOS os filhos
+   (form-section-title, form-grid, form-grid-3, form-grid-4, radio-row-3,
+   flag-checks, etc.) sem precisar de seletores + frágeis. */
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+.form-section:last-of-type {
+    margin-bottom: 0;
+}
+
+/* Uso explícito quando o form-section não é o último <div> do painel
+   (ex: seguido de .stepper-nav) — :last-of-type não pega esse caso. */
+.form-section.no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-primary-700);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-primary-100);
+    /* margin-bottom removido — gap do form-section controla o espaço abaixo */
+}
+
+/* ── Grid de campos ────────────────────────────────────────────────────── */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+.form-grid .span-full,
+.form-grid-3 .span-full,
+.form-grid-4 .span-full,
+.form-grid-5 .span-full {
+    grid-column: 1 / -1;
+}
+
+/* O grid controla o espaçamento — remove margin-bottom padrão do .field.
+   Inclui também o .field solto (direto filho do form-section, sem grid ao
+   redor — ex: um campo único de rádio) para que o gap do form-section seja
+   a única fonte de espaçamento, como o comentário acima dele já promete. */
+.cotacao-container .form-grid .field,
+.cotacao-container .form-grid-3 .field,
+.cotacao-container .form-grid-4 .field,
+.cotacao-container .form-grid-5 .field,
+.cotacao-container .radio-row-3 .field,
+.cotacao-container .form-section > .field,
+.form-section .values-grid .field {
+    margin-bottom: 0;
+}
+
+/* ── Field label ajustado para formulários densos ───────────────────────── */
+
+.cotacao-container .field-label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--color-gray-500);
+    margin-bottom: var(--space-1);
+}
+
+.cotacao-container .field-label .required {
+    color: var(--color-danger);
+    font-weight: 700;
+}
+
+.cotacao-container .custom-select-trigger.has-icon {
+    padding-left: 2.5rem;
+}
+
+.cotacao-container textarea.field-input {
+    height: auto;
+    padding: var(--space-3);
+    resize: vertical;
+}
+
+
+/* ── Grids de 3 e 4 colunas para seções de formulário ───────────────────── */
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+}
+
+.form-grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+}
+
+.form-grid-5 {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+}
+
+/* Envolve mais de um grid dentro da mesma seção (ex.: dados + endereço do
+   inquilino, dados PF/PJ + campo de pessoa exposta) — sem isso os filhos
+   diretos ficam colados um no outro, sem nenhum espaçamento entre eles. */
+.inq-pf-section,
+.inq-pj-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+/* Seletores + removidos — o gap do form-section (flex column) cuida de tudo. */
+
+/* ── Row de 3 radios lado a lado ───────────────────────────────────────── */
+
+.radio-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+}
+
+.radio-row-3 .field {
+    margin-bottom: 0;
+}
+
+/* ── CEP com botão "Não sei" ───────────────────────────────────────────── */
+
+.cep-input-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.cep-input-row .field-input-wrap {
+    flex: 1;
+}
+
+.cep-naosei {
+    flex-shrink: 0;
+    white-space: nowrap;
+    color: var(--color-primary-600);
+    border-color: var(--color-primary-300);
+}
+
+.cep-naosei:hover {
+    background-color: var(--color-primary-100);
+    border-color: var(--color-primary-500);
+    color: var(--color-primary-700);
+}
+
+/* ── Radio group ───────────────────────────────────────────────────────── */
+
+.field-radio-group {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    padding-top: 6px;
+}
+
+.field-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    user-select: none;
+}
+
+.field-radio input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-primary-600);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* ── Botão "Não informar" inline no input ──────────────────────────────── */
+
+.field-input.has-action {
+    padding-right: 7rem;
+}
+
+.field-input-action {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-gray-400);
+    background: none;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    padding: 2px var(--space-2);
+    line-height: 1.4;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+    user-select: none;
+}
+
+.field-input-action:hover {
+    color: var(--color-gray-700);
+    border-color: var(--color-gray-400);
+    background-color: var(--color-gray-50);
+}
+
+.field-input-action.is-active {
+    color: var(--color-primary-700);
+    border-color: var(--color-primary-400);
+    background-color: var(--color-primary-50, #f5f0f5);
+}
+
+.field-input.is-skipped {
+    opacity: 0.35;
+    pointer-events: none;
+    background-color: var(--color-gray-50);
+}
+
+/* ── Pretendentes adicionais (collapsível) ─────────────────────────────── */
+
+.extra-pretendente {
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-3);
+}
+
+.extra-pretendente:last-child {
+    margin-bottom: 0;
+}
+
+#imoveis-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+}
+
+/* Header escuro do card de imóvel — mesmo gradiente do .stepper-header do
+   Fiança, só que sem os círculos de step (aqui não tem "próximo passo"). */
+#imoveis-list .panel-header {
+    background: linear-gradient(90deg, var(--color-primary-900) 0%, var(--color-gray-900) 100%);
+    border-bottom: none;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+#imoveis-list .panel-header .panel-title {
+    color: var(--color-white);
+    font-size: var(--font-size-md);
+    font-weight: 700;
+}
+
+#imoveis-list .panel-header .extra-pretendente-remove {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+#imoveis-list .panel-header .extra-pretendente-remove:hover {
+    color: var(--color-white);
+}
+
+.incendio-form-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.incendio-form-nav-right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.extra-pretendente-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-gray-50);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-600);
+    border-bottom: 1px solid transparent;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+    text-align: left;
+}
+
+.extra-pretendente-toggle:hover {
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-800);
+}
+
+.extra-pretendente-toggle.is-open {
+    border-bottom-color: var(--color-gray-200);
+    color: var(--color-primary-700);
+}
+
+.extra-pretendente-caret {
+    transition: transform var(--transition-fast);
+    color: var(--color-gray-400);
+    flex-shrink: 0;
+}
+
+.extra-pretendente-toggle.is-open .extra-pretendente-caret {
+    transform: rotate(180deg);
+}
+
+.extra-pretendente-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+}
+
+.extra-pretendente-body.is-open {
+    max-height: 1200px;
+    overflow: visible;
+}
+
+.extra-pretendente-body-inner {
+    padding: var(--space-4);
+}
+
+.extra-pretendente-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-4);
+    background-color: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.extra-pretendente-title {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-primary-700);
+}
+
+.extra-pretendente-remove {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-danger);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.extra-pretendente-remove:hover {
+    text-decoration: underline;
+}
+
+#pretendentes-extras-list:empty {
+    display: none;
+}
+
+#btn-add-pretendente {
+    align-self: flex-start;
+}
+
+/* ── Grid de valores do imóvel (Step 3) ────────────────────────────────── */
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3);
+}
+
+/* ── Coberturas (Step 4) ───────────────────────────────────────────────── */
+
+.cobertura-plan {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+}
+
+.cobertura-plan-option {
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+}
+
+.cobertura-plan-option input[type="radio"] {
+    margin-top: 3px;
+    accent-color: var(--color-primary-600);
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.cobertura-plan-option:has(input:checked) {
+    border-color: var(--color-primary-500);
+    background-color: var(--color-primary-100);
+}
+
+.cobertura-plan-label {
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.cobertura-plan-desc {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.coberturas-extra {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+
+.cobertura-check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    user-select: none;
+}
+
+.cobertura-check input[type="checkbox"] {
+    accent-color: var(--color-primary-600);
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+.cobertura-check-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cobertura-check-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.cobertura-check-desc {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    line-height: 1.4;
+}
+
+.cobertura-check:has(input:checked) {
+    border-color: var(--color-primary-400);
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-800);
+}
+
+.cobertura-check:has(input:checked) .cobertura-check-label {
+    color: var(--color-primary-800);
+}
+
+.cobertura-check:has(input:checked) .cobertura-check-desc {
+    color: var(--color-primary-600);
+}
+
+.form-section-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    margin-top: calc(-1 * var(--space-2));
+}
+
+/* ── Busca de imóvel por código (cliente Sami) ─────────────────────────── */
+
+.imovel-lookup-compact .field-input-action {
+    color: var(--color-primary-600);
+}
+
+#imovel-lookup-status {
+    display: block;
+    margin-top: var(--space-1);
+}
+
+#imovel-lookup-status.is-error   { color: var(--color-danger); }
+#imovel-lookup-status.is-success { color: var(--color-success); }
+#imovel-lookup-status.is-loading { color: var(--color-gray-600); }
+
+/* ── Rodapé de navegação do stepper ────────────────────────────────────── */
+
+.stepper-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-gray-100);
+    margin-top: var(--space-4);
+    gap: var(--space-3);
+}
+
+.stepper-nav-left,
+.stepper-nav-right {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+}
+
+/* ── Botão "Salvar Rascunho" — visível em qualquer step ─────────────────── */
+
+.stepper-save-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-3);
+}
+
+/* Spinner no botão secundário */
+.btn-secondary .spinner {
+    border-color: rgba(0, 0, 0, 0.15);
+    border-top-color: var(--color-gray-700);
+}
+
+/* ── Responsivo ────────────────────────────────────────────────────────────
+   ≤ 860px → o cotacao-container já expande para 100%
+   ≤ 640px → labels do stepper somem, grid vira 1 col
+   ≤ 480px → valores em 1 col, nav empilha
+   ────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .stepper-step-label {
+        display: none;
+    }
+
+    .radio-row-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid,
+    .form-grid-3,
+    .form-grid-4,
+    .form-grid-5 {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid .span-full {
+        grid-column: 1;
+    }
+
+    .values-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cobertura-plan {
+        grid-template-columns: 1fr;
+    }
+
+    .coberturas-extra {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stepper-nav {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .stepper-nav-left,
+    .stepper-nav-right {
+        flex-direction: column;
+    }
+
+    .stepper-nav .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ── Flag checkboxes (Seguro novo / Renovação) ─────────────────────────── */
+
+.flag-checks {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-5);
+}
+
+.flag-check {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 99px;
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    user-select: none;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.flag-check:hover {
+    border-color: var(--color-primary-300);
+    color: var(--color-primary-700);
+}
+
+.flag-check:has(input:checked) {
+    border-color: var(--color-primary-400);
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+}
+
+.flag-check input[type="checkbox"],
+.flag-check input[type="radio"] {
+    accent-color: var(--color-primary-600);
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+/* Índice de reajuste — mesmo componente de switch das Coberturas Adicionais,
+   mas com quantidade variável de opções (7), então usa wrap em vez de grid fixo. */
+.indice-reajuste-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4) var(--space-5);
+}
+
+/* ── Linha "ir ao trabalho" + km inline ─────────────────────────────────── */
+
+.ir-trabalho-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.ir-trabalho-km {
+    flex: 1;
+    max-width: 220px;
+}
+
+.ir-trabalho-km .field-input:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background-color: var(--color-gray-50);
+}
+
+/* ── Garagem grid ───────────────────────────────────────────────────────── */
+
+.garagem-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+}
+
+.garagem-item {
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.garagem-item .switch:last-child .switch-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.garagem-item .switch:last-child:has(input:disabled) {
+    opacity: 0.5;
+}
+
+.garagem-item:has(.switch:first-child input:checked) {
+    border-color: var(--color-primary-300);
+    background-color: var(--color-primary-50, #f8f5ff);
+}
+
+/* ── Campo faded (desabilitado visualmente) ─────────────────────────────── */
+
+.field.is-faded {
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+/* ── Garagem responsivo ─────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .garagem-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flag-checks {
+        gap: var(--space-2);
+    }
+
+    .coberturas-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Coverage grid for condomínio ───────────────────────────────────────── */
+
+.coberturas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-3) var(--space-5);
+}
+
+.cobertura-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.cobertura-row-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    flex: 1;
+    min-width: 0;
+}
+
+.cobertura-row .field-input-wrap {
+    width: 130px;
+    flex-shrink: 0;
+}
+
+.field-input-prefix {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-gray-400);
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.field-input.has-prefix {
+    padding-left: 2rem;
+}
+
+/* Sufixo à direita do input (ex: "%" no campo de comissão) — mesmo padrão do prefixo acima */
+.field-input-suffix {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-gray-400);
+    font-size: var(--font-size-sm);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.field-input.has-suffix {
+    padding-right: 2rem;
+}
+
+/* ── Tab toggle for PF/PJ ───────────────────────────────────────────────── */
+
+.tab-toggle {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.tab-btn {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-600);
+    border: 1.5px solid var(--color-gray-300);
+    transition: all var(--transition-fast);
+}
+
+.tab-btn.is-active {
+    background-color: var(--color-primary-50);
+    border-color: var(--color-primary-400);
+    color: var(--color-primary-700);
+}
+
+/* ── Seguro atual detail reveal ─────────────────────────────────────────── */
+
+.seguro-atual-details {
+    display: none;
+}
+
+.seguro-atual-details.is-visible {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
+    margin-top: var(--space-4);
+}
+/* ── Seguro Residencial ─────────────────────────────────────────────────── */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+}
+.cotacao-container .form-grid-2 .field { margin-bottom: 0; }
+.form-grid-3 > .span-2,
+.form-grid-4 > .span-2 { grid-column: span 2; }
+/* Textarea com ícone: ícone alinhado à primeira linha. */
+.field-input-wrap--textarea { align-items: flex-start; }
+.field-input-wrap--textarea .field-input-icon { top: 0.7rem; }
+.field-input-wrap--textarea textarea.field-input { resize: vertical; }
+#form-cotacao-residencial .field-hint { margin-top: var(--space-1); }
+#endereco-segurado { margin-top: var(--space-3); }
+
+@media (max-width: 640px) {
+    .form-grid-2 { grid-template-columns: 1fr; }
+    .form-grid-3 > .span-2,
+    .form-grid-4 > .span-2 { grid-column: 1; }
+}

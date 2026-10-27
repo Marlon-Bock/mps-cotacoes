@@ -1,0 +1,805 @@
+/* ── Página de detalhe de cotação ─────────────────────────────────────── */
+
+.detalhe-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: var(--space-5);
+    align-items: start;
+}
+
+.detalhe-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+.detalhe-right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+}
+
+/* ── Header da cotação ────────────────────────────────────────────────── */
+
+.detalhe-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.detalhe-header-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.detalhe-header-ident {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border-left: 3px solid var(--color-primary-600);
+    padding-left: var(--space-3);
+}
+
+.detalhe-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.detalhe-header-ident .tipo-pill {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    line-height: 1;
+}
+
+.detalhe-header-ident .detalhe-proto {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-gray-900);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.detalhe-header-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+    padding-top: var(--space-3);
+    margin-top: var(--space-3);
+}
+
+.detalhe-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+    line-height: 1;
+}
+
+.detalhe-info-item svg {
+    flex-shrink: 0;
+    color: var(--color-gray-400);
+    width: 14px;
+    height: 14px;
+}
+
+.detalhe-info-label {
+    color: var(--color-gray-400);
+    font-weight: 600;
+}
+
+.detalhe-info-value {
+    color: var(--color-gray-700);
+    font-weight: 600;
+}
+
+.detalhe-header-badges {
+    display: none;
+}
+
+
+/* ── Panel title ────────────────────────────────────────────────────────── */
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+/* ── Grid de campos (exibição de dados) ──────────────────────────────── */
+
+.detalhe-fields {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3) var(--space-5);
+}
+
+/* Ação de status dentro do card de um imóvel (Seguro Incêndio) — cada
+   imóvel tem seu próprio ciclo de vida, então a ação fica junto dos dados
+   dele, não numa coluna lateral única pra cotação inteira. */
+/* Padding só vertical por padrão — quando o bloco já está dentro de um
+   .panel-body (lado imobiliária, card fixo sem collapse), o espaçamento
+   lateral já vem do próprio .panel-body; duplicar o padding aqui deixava
+   os botões mais recuados que os campos de dados acima. */
+.imovel-acoes {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+/* Lado admin: o bloco de ação é irmão direto do .panel (não tem
+   .panel-body por perto, já que os dados ficam no colapsável) — aí sim
+   precisa do padding lateral/inferior próprio. */
+.panel > .imovel-acoes {
+    margin-top: 0;
+    padding: var(--space-4) var(--space-5) var(--space-5);
+}
+
+/* Aviso compacto (1 linha, sem o padding grande de .alert) — o card já é
+   pequeno o bastante, com N imóveis na tela um .alert cheio por card vira
+   muita altura desperdiçada. */
+.imovel-acoes-hint {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.imovel-acoes-row + .imovel-acoes-hint {
+    margin-bottom: 0;
+}
+
+.imovel-acoes-hint .icon {
+    flex-shrink: 0;
+    color: var(--color-gray-400);
+}
+
+.imovel-acoes-hint.is-warning { color: var(--color-warning, #92400e); }
+.imovel-acoes-hint.is-warning .icon { color: var(--color-warning, #92400e); }
+
+/* Pedido de alteração da imobiliária — citação destacada, não é só um
+   aviso de 1 linha: precisa ler o texto todo que o cliente escreveu. */
+.pedido-alteracao-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-3);
+    margin-bottom: var(--space-3);
+    background: var(--color-warning-bg, #fff7ed);
+    border-left: 3px solid var(--color-warning, #92400e);
+    border-radius: var(--radius-sm, 4px);
+}
+
+.pedido-alteracao-box-label {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .02em;
+    color: var(--color-warning, #92400e);
+}
+
+.pedido-alteracao-box-texto {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    white-space: pre-wrap;
+}
+
+/* Linha de botões — tudo lado a lado, quebra se não couber (em vez de
+   empilhar um btn-block embaixo do outro). */
+.imovel-acoes-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* Ação secundária (desistir) — discreta, não compete visualmente com as
+   ações principais da etapa atual. Fica na mesma linha, alinhada à direita. */
+.imovel-acoes-secundaria {
+    margin-left: auto;
+}
+
+/* Estado final do imóvel (recusado/desistência) — tem mais peso visual que
+   os avisos de "ainda em andamento" (.imovel-acoes-hint), porque é um
+   resultado definitivo do imóvel, não um passo intermediário. */
+.imovel-status-final {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-700);
+}
+
+.imovel-status-final-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-600);
+}
+
+.imovel-status-final.is-recusado {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.imovel-status-final.is-recusado .imovel-status-final-icon {
+    background-color: var(--color-white);
+    color: var(--color-danger);
+}
+
+.imovel-status-final.is-concluido {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.imovel-status-final.is-concluido .imovel-status-final-icon {
+    background-color: var(--color-white);
+    color: var(--color-success);
+}
+
+/* Card de imóvel colapsável (reaproveita .extra-pretendente-toggle/-body de
+   cotacao.css) — o toggle precisa do mesmo raio de borda do .panel por
+   fora, senão os cantos quadrados do botão vazam por cima dos cantos
+   arredondados do card quando fechado. */
+[data-imovel-card] {
+    overflow: hidden;
+}
+
+[data-imovel-card] .extra-pretendente-toggle {
+    cursor: pointer;
+    border: none;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+    background-color: var(--color-white);
+    color: var(--color-gray-800);
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-md);
+    font-weight: 700;
+}
+
+[data-imovel-card] .extra-pretendente-toggle.is-open {
+    border-bottom-color: var(--color-gray-200);
+}
+
+[data-imovel-card] .extra-pretendente-toggle:hover,
+[data-imovel-card] .extra-pretendente-toggle.is-open {
+    background-color: var(--color-white);
+    color: var(--color-gray-800);
+}
+
+.detalhe-field-label {
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--color-gray-400);
+    margin-bottom: var(--space-1);
+}
+
+.detalhe-field-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-800);
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.detalhe-field-value.is-empty {
+    color: var(--color-gray-300);
+    font-weight: 400;
+    font-style: italic;
+    font-size: var(--font-size-xs);
+}
+
+.detalhe-field-value--strong {
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.detalhe-field-value--total {
+    font-weight: 700;
+    font-size: var(--font-size-md);
+    color: var(--color-primary-700);
+}
+
+.detalhe-field.span-full {
+    grid-column: 1 / -1;
+}
+
+/* ── Lista de valores financeiros ────────────────────────────────────── */
+
+.valores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.valores-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+.valores-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.valores-row--subtotal {
+    font-weight: 600;
+    color: var(--color-gray-800);
+    border-top: 1px solid var(--color-gray-200);
+    border-bottom: none;
+    margin-top: var(--space-2);
+    padding-top: var(--space-3);
+}
+
+.valores-row--total {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    border-top: 2px solid var(--color-gray-200);
+    border-bottom: none;
+    padding-top: var(--space-3);
+    margin-top: 0;
+}
+
+/* Ação secundária logo abaixo do botão principal do painel de proposta
+   (ex.: "Recusado pelo cliente" abaixo de "Enviar nova proposta"). */
+.proposta-acao-secundaria {
+    margin-top: var(--space-2);
+}
+
+/* ── Status timeline ─────────────────────────────────────────────────── */
+
+.status-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: var(--space-2) 0;
+}
+
+.timeline-item {
+    display: flex;
+    gap: var(--space-3);
+    padding-bottom: var(--space-4);
+    position: relative;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 16px;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--color-gray-200);
+}
+
+.timeline-item:last-child::before {
+    display: none;
+}
+
+/* Linha entre dois passos concluídos = verde */
+.timeline-item.is-done::before {
+    background-color: var(--color-success);
+}
+
+/* Linha do passo anterior até o recusado = vermelha */
+.timeline-item.is-done:has(+ .timeline-item.is-recusado)::before,
+.timeline-item.is-current:has(+ .timeline-item.is-recusado)::before {
+    background-color: var(--color-danger);
+}
+
+.timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background-color: var(--color-gray-200);
+    border: 2px solid var(--color-gray-300);
+    flex-shrink: 0;
+    margin-top: 2px;
+    z-index: 1;
+}
+
+.timeline-item.is-done .timeline-dot {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+}
+
+.timeline-item.is-current .timeline-dot {
+    background-color: var(--color-primary-600);
+    border-color: var(--color-primary-600);
+}
+
+.timeline-item.is-recusado .timeline-dot {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+.timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 1px;
+    flex: 1;
+    min-width: 0;
+}
+
+.timeline-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-700);
+    line-height: 1.4;
+}
+
+.timeline-item.is-pending .timeline-label {
+    color: var(--color-gray-400);
+    font-weight: 400;
+}
+
+.timeline-item.is-current .timeline-label {
+    color: var(--color-primary-600);
+}
+
+.timeline-item.is-recusado .timeline-label {
+    color: var(--color-danger);
+}
+
+.timeline-item.is-desistencia .timeline-dot {
+    background-color: var(--color-gray-400);
+    border-color: var(--color-gray-400);
+}
+
+.timeline-item.is-desistencia .timeline-label {
+    color: var(--color-gray-600);
+}
+
+.timeline-meta {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.timeline-tipo-evento {
+    color: var(--color-gray-400);
+}
+
+.timeline-obs {
+    margin-top: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+    font-style: italic;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-gray-50);
+    border-left: 2px solid var(--color-gray-200);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+/* Resumo de tempo total no rodapé da timeline (usado no modal do Gerenciador) */
+.timeline-tempo-total {
+    margin-top: var(--space-3);
+}
+
+/* ── Painel direito — anexo ──────────────────────────────────────────── */
+
+.anexo-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-gray-100);
+    margin-bottom: var(--space-4);
+}
+
+.anexo-data {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+/* ── Protocolo — estilo base (sobrescrito pelo contexto .detalhe-header-ident) */
+
+.detalhe-proto {
+    font-family: var(--font-mono, monospace);
+    font-size: var(--font-size-xl);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    letter-spacing: -0.5px;
+}
+
+/* ── Seções dentro do panel único ────────────────────────────────────── */
+
+.detalhe-left .form-section+.form-section {
+    margin-top: var(--space-4);
+    margin-bottom: 0;
+}
+
+/* ── Campos readonly no detalhe ─────────────────────────────────────── */
+
+.detalhe-layout .field-input[readonly] {
+    background: var(--color-gray-50);
+    border-color: var(--color-gray-200);
+    color: var(--color-gray-700);
+    cursor: default;
+}
+
+.detalhe-layout .field-input[readonly]:focus {
+    outline: none;
+    border-color: var(--color-gray-200);
+    box-shadow: none;
+}
+
+/* ── Responsivo ──────────────────────────────────────────────────────── */
+
+@media (max-width: 960px) {
+    .detalhe-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Coberturas — badges visuais (ativo/inativo) ────────────────────────── */
+
+.coberturas-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+.cob-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    padding: var(--space-1) var(--space-3);
+    border-radius: 99px;
+    border: 1px solid var(--color-gray-200);
+    color: var(--color-gray-400);
+    background: var(--color-gray-50);
+    white-space: nowrap;
+}
+
+.cob-badge.is-active {
+    border-color: var(--color-primary-300);
+    color: var(--color-primary-700);
+    background: var(--color-primary-100);
+}
+
+/* ── Coberturas condominial ─────────────────────────────────────────────── */
+
+.coberturas-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+}
+
+.cobertura-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+.cobertura-check {
+    color: var(--color-success);
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+/* ── Tipo pills (header) ────────────────────────────────────────────────── */
+
+.tipo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-full);
+    background: var(--color-gray-100);
+    color: var(--color-gray-600);
+}
+
+/* No header de detalhe, o tipo vira label limpo sem caixa */
+.detalhe-header-badges .tipo-pill {
+    background: transparent;
+    padding: 0;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    gap: 4px;
+}
+
+@media (max-width: 640px) {
+    .detalhe-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .detalhe-field.span-full {
+        grid-column: 1;
+    }
+}
+
+/* ── Header da cotação (imobiliária) ────────────────────────────────── */
+
+.detalhe-panel-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Linha 1: tipo + status */
+.dph-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+}
+
+.dph-tipo {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-primary-600);
+    text-transform: uppercase;
+    letter-spacing: 0.9px;
+    line-height: 1;
+}
+
+.dph-tipo svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    color: var(--color-primary-500);
+}
+
+/* Linha 2: protocolo */
+.dph-proto {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-gray-900);
+    letter-spacing: -0.5px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    margin: 0 0 var(--space-3) 0;
+    display: block;
+}
+
+/* Linha 3: barra de meta info */
+.dph-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+    flex-wrap: wrap;
+}
+
+.dph-bar-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.dph-bar-item svg {
+    width: 13px;
+    height: 13px;
+    color: var(--color-gray-400);
+    flex-shrink: 0;
+}
+
+.dph-bar-label {
+    color: var(--color-gray-400);
+    font-weight: 600;
+}
+
+.dph-bar-value {
+    color: var(--color-gray-700);
+    font-weight: 600;
+}
+
+.dph-bar-sep {
+    color: var(--color-gray-200);
+    margin: 0 var(--space-1);
+    font-size: 14px;
+    line-height: 1;
+    user-select: none;
+}
+
+.dph-bar-spacer {
+    flex: 1;
+}
+
+/* ── Desistência do cliente ──────────────────────────────────────────── */
+
+.desistencia-texto {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    line-height: 1.5;
+}
+
+.panel-desistencia .btn svg {
+    color: var(--color-gray-500);
+}
+
+/* Botão "Cotar com outro pretendente" — fica logo abaixo do aviso de
+   recusada, dentro do mesmo panel-body. */
+.btn-recotar-outro-pretendente {
+    margin-top: var(--space-3);
+}
+
+/* Modal "Cotar com outro pretendente" — mesmo padrão de outros modais
+   mpsAlert com vários campos (ex: .visita-regiao-form): o card é
+   centralizado por padrão, então o formulário precisa do próprio container
+   flex com gap e texto alinhado à esquerda. */
+.recotar-pretendente-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    text-align: left;
+    margin-top: var(--space-3);
+}
+
+.recotar-pretendente-form .field {
+    margin-bottom: 0;
+}
+
+/* ── Print / PDF ─────────────────────────────────────────────────────── */
+
+@media print {
+    .sidebar, .app-topbar, .nav-imobiliaria, .detalhe-right,
+    .page-actions, .dph-pdf-btn, .btn-pdf { display: none !important; }
+    .app-shell, .app-main, .app-content { display: block !important; }
+    .detalhe-layout { grid-template-columns: 1fr !important; }
+    .panel { box-shadow: none !important; border: 1px solid #ddd !important; }
+    body { font-size: 12px; }
+}

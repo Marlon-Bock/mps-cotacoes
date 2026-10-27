@@ -1,0 +1,590 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Fluxo da API das seguradoras com a MPS no meio — mesmos componentes do
+   dev-cotacoes-3 (Segimob):
+   - imobiliária: painel "Análise da cotação" (estados), propostas da MPS
+     em lista comparativa e a proposta aceita / apólice;
+   - MPS: "Fazer cotação" (instrução no topo, chave "Enviar ao cliente" em
+     cada card, barra de envio presa no rodapé) e o painel no detalhe.
+   Complementa cotacao-fianca-seguradoras.css (cards, selos, avisos).
+   ══════════════════════════════════════════════════════════════════════ */
+
+.seg-processando--solto {
+    margin-top: 0;
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-md);
+}
+
+.seg-card-situacao {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.seg-card-situacao svg { width: 16px; height: 16px; }
+.seg-card-situacao.is-pendente { color: var(--color-gray-600); }
+
+/* Linha do topo: instrução da etapa + "Atualizar". */
+.seg-toolbar--instrucao {
+    justify-content: space-between;
+    align-items: center;
+}
+
+.seg-toolbar-texto {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1 1 320px;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-toolbar-texto svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--color-gray-400); }
+
+/* Barra de envio das propostas — presa no rodapé da área de conteúdo. */
+.seg-cotar-barra {
+    position: sticky;
+    bottom: var(--space-4);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    box-shadow: var(--shadow-md);
+}
+
+.seg-cotar-resumo {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    line-height: 1.25;
+}
+
+.seg-cotar-contador {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.seg-cotar-resumo-sub {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-cotar-obs { flex: 1; min-width: 0; }
+
+.seg-cotar-barra .btn { flex-shrink: 0; }
+
+.seg-card-incluir {
+    margin: var(--space-4) var(--space-5) 0;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    background: var(--color-gray-50);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+}
+
+.seg-card .seg-card-situacao + .seg-card-rodape,
+.seg-card > .seg-card-situacao {
+    margin-left: var(--space-5);
+    margin-right: var(--space-5);
+}
+
+/* Painel da análise no detalhe da MPS */
+.seg-mps-lista {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-3);
+    padding: 0;
+}
+
+.seg-mps-lista li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+.seg-mps-lista li strong { margin-left: auto; }
+.seg-mps-lista li .status-pill { margin-left: auto; }
+.seg-mps-lista li strong + .status-pill { margin-left: 0; }
+
+.seg-mps-lista--status {
+    margin: var(--space-4) 0 0;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+/* Propostas pra imobiliária — lista comparativa: uma linha por seguradora
+   (marca · nome/selos · planos · prêmio · ação), do menor valor pro maior. */
+.seg-ofertas-cabeca {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+}
+
+.seg-ofertas-data {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-propostas-intro {
+    margin: 0 0 var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-ofertas {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.seg-oferta {
+    display: grid;
+    grid-template-columns: 112px minmax(150px, 1.1fr) minmax(180px, 1.4fr) 150px auto;
+    align-items: center;
+    gap: var(--space-5);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-white);
+}
+
+.seg-oferta + .seg-oferta { border-top: 1px solid var(--color-gray-100); }
+
+.seg-oferta--melhor {
+    background: color-mix(in srgb, var(--color-success-bg) 55%, var(--color-white));
+    box-shadow: inset 3px 0 0 var(--color-success);
+}
+
+.seg-oferta-marca {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+}
+
+.seg-oferta-marca .seg-logo-img {
+    max-width: 112px;
+    max-height: 40px;
+    object-fit: contain;
+}
+
+.seg-oferta-marca .seg-logo-fallback {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-sm);
+}
+
+.seg-oferta-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.seg-oferta-nome {
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.seg-oferta-selos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.seg-oferta-menor {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--color-success);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+.seg-oferta-menor svg { width: 12px; height: 12px; }
+
+.seg-oferta-planos {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Planos como controle segmentado (um só ativo). */
+.seg-oferta-opcoes {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-self: flex-start;
+    padding: 3px;
+    gap: 3px;
+    border-radius: var(--radius-md);
+    background: var(--color-gray-100);
+}
+
+.seg-oferta-opcao {
+    padding: 6px 12px;
+    border: 0;
+    border-radius: calc(var(--radius-md) - 2px);
+    background: transparent;
+    color: var(--color-gray-600);
+    font: inherit;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.seg-oferta-opcao:hover { color: var(--color-gray-900); }
+
+.seg-oferta-opcao.is-ativo {
+    background: var(--color-white);
+    color: var(--color-gray-900);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+
+.seg-oferta-plano-unico {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-oferta-aviso {
+    font-size: var(--font-size-xs);
+    color: var(--color-warning);
+}
+
+.seg-oferta-preco {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.seg-oferta-valor {
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--color-gray-900);
+    white-space: nowrap;
+}
+
+.seg-oferta-valor-sub {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-oferta-acao { justify-self: end; }
+
+.seg-oferta-acao .btn { min-width: 112px; }
+
+.seg-propostas-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+}
+
+.seg-propostas-rodape-texto {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+@media (max-width: 960px) {
+    .seg-oferta {
+        grid-template-columns: 88px 1fr auto;
+        grid-template-areas:
+            "marca info  preco"
+            "marca planos acao";
+        row-gap: var(--space-3);
+    }
+    .seg-oferta-marca  { grid-area: marca; }
+    .seg-oferta-info   { grid-area: info; }
+    .seg-oferta-planos { grid-area: planos; }
+    .seg-oferta-preco  { grid-area: preco; }
+    .seg-oferta-acao   { grid-area: acao; }
+}
+
+@media (max-width: 560px) {
+    .seg-oferta {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "marca  preco"
+            "info   info"
+            "planos planos"
+            "acao   acao";
+        padding: var(--space-4);
+    }
+    .seg-oferta-marca { justify-content: flex-start; }
+    .seg-oferta-acao { justify-self: stretch; }
+    .seg-oferta-acao .btn { width: 100%; }
+    .seg-propostas-rodape { flex-direction: column; align-items: stretch; text-align: center; }
+}
+
+.seg-documentos-linha {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+
+
+@media (max-width: 720px) {
+    .seg-cotar-barra { flex-wrap: wrap; padding: var(--space-3); gap: var(--space-3); }
+    .seg-cotar-obs { flex-basis: 100%; order: 3; }
+    .seg-cotar-barra .btn { margin-left: auto; }
+}
+
+
+
+/* Estados do painel "Análise da cotação" (imobiliária) — mesmo bloco do
+   "Em análise", só muda a cor e o ícone. */
+.seg-processando-icone {
+    flex-shrink: 0;
+    display: inline-flex;
+    margin-top: 1px;
+}
+
+.seg-processando-icone svg { width: 20px; height: 20px; }
+
+.seg-processando--ok     { background: var(--color-success-bg); color: var(--color-success); }
+.seg-processando--alerta { background: var(--color-warning-bg); color: var(--color-warning); }
+.seg-processando--erro   { background: var(--color-danger-bg);  color: var(--color-danger); }
+
+.seg-processando-acao { margin-top: var(--space-3); }
+
+/* Proposta aceita (imobiliária): a linha da seguradora escolhida + a
+   situação da apólice embaixo, no mesmo contorno da lista de propostas. */
+.seg-oferta--aceita {
+    grid-template-columns: 112px 1fr auto;
+}
+
+.seg-oferta-detalhes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.seg-oferta-detalhes span + span::before {
+    content: '·';
+    margin: 0 8px;
+    color: var(--color-gray-300);
+}
+
+.seg-aceita-apolice {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+    font-size: var(--font-size-sm);
+}
+
+.seg-aceita-apolice .seg-processando-spinner { width: 16px; height: 16px; margin: 0; }
+
+.seg-aceita-apolice.is-enviada {
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.seg-aceita-apolice-texto {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.seg-aceita-apolice-texto svg { width: 18px; height: 18px; }
+
+.seg-aceita-apolice-docs {
+    display: inline-flex;
+    gap: var(--space-2);
+}
+
+@media (max-width: 960px) {
+    .seg-oferta--aceita {
+        grid-template-columns: 88px 1fr auto;
+        grid-template-areas: "marca info preco";
+    }
+}
+
+@media (max-width: 560px) {
+    .seg-oferta--aceita {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "marca preco"
+            "info  info";
+    }
+    .seg-aceita-apolice { padding: var(--space-3) var(--space-4); }
+}
+
+/* Painel da API no detalhe da MPS (coluna direita). */
+.seg-mps-estado { margin-bottom: var(--space-3); }
+
+.seg-mps-resumo {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 var(--space-3);
+}
+
+.seg-mps-resumo > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+    font-size: var(--font-size-sm);
+}
+
+.seg-mps-resumo > div:first-child { padding-top: 0; }
+
+.seg-mps-resumo dt { color: var(--color-gray-500); }
+
+.seg-mps-resumo dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    text-align: right;
+}
+
+.seg-aceita-apolice.is-erro {
+    justify-content: space-between;
+    flex-wrap: wrap;
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.seg-oferta-planos .btn-link-biometria { align-self: flex-start; }
+
+.seg-card-na-proposta { margin: var(--space-4) var(--space-5) 0; }
+
+/* Botões da biometria pendente (copiar link / WhatsApp), nas duas telas. */
+.seg-biometria-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+
+/* Lista das biometrias pedidas (pode ter mais de uma — uma por seguradora). */
+.seg-biometrias {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: var(--space-3) 0;
+    padding: 0;
+}
+
+.seg-biometria {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-3);
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-md);
+}
+
+.seg-biometria.is-pendente { border-color: color-mix(in srgb, var(--color-warning) 30%, transparent); }
+
+.seg-biometria-nome {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.seg-biometria-nome svg { width: 16px; height: 16px; color: var(--color-gray-500); }
+
+.seg-biometria .seg-biometria-acoes { flex-basis: 100%; }
+
+/* Documentos da contratação no painel da MPS: proposta e apólice. */
+.seg-mps-docs-titulo {
+    display: block;
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--color-gray-500);
+}
+
+.seg-mps-docs {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin: 0 0 var(--space-2);
+    padding: 0;
+}
+
+.seg-mps-doc {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-3);
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--radius-md);
+}
+
+.seg-mps-doc-nome {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-800);
+    overflow-wrap: anywhere;
+}
+
+.seg-mps-doc-nome svg { width: 16px; height: 16px; color: var(--color-gray-500); flex-shrink: 0; }
+
+.seg-mps-doc-acoes {
+    display: flex;
+    gap: var(--space-2);
+    flex-basis: 100%;
+}
+
+.seg-mps-doc-acoes:empty { display: none; }
+
+.seg-mps-docs-nota {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-aceita-apolice.is-proposta {
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.seg-aceita-apolice-texto .seg-processando-spinner { width: 16px; height: 16px; margin: 0; }

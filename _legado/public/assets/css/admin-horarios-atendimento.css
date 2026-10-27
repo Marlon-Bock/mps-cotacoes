@@ -1,0 +1,12 @@
+/**
+ * Horário de Atendimento (admin) — só o que é específico dessa página.
+ * Reaproveita .panel/.admin-cot-grid-wrap/.panel-list-item/.field-row/.switch-group
+ * já existentes em components.css/cotacoes.css.
+ */
+
+.horario-bloqueio-acoes {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}

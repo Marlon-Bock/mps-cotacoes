@@ -1,0 +1,167 @@
+/**
+ * Imobiliárias — Gerenciar/Criar/Editar (páginas /admin/imobiliarias/*).
+ * Reaproveita ao máximo componentes já existentes (.panel, .field, .switch,
+ * .field-radio, .status-pill, .visita-imob-field/.visita-imob-sugestoes) —
+ * aqui só o que é genuinamente novo dessas telas.
+ */
+
+/* ── Criar/Editar: botões de ação soltos na coluna lateral (sem card em
+   volta) — os dois dividem a largura igualmente em vez de ficarem
+   desparelhos (Salvar bem maior que Cancelar) ──────────────────────────── */
+
+.form-actions-side .btn {
+    flex: 1;
+}
+
+/* ── Criar/Editar: cliente institucional selecionado ─────────────────────── */
+
+.imob-institucional-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--color-primary-100);
+    border: 1px solid var(--color-primary-200, var(--color-primary-100));
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-primary-700);
+}
+
+.imob-institucional-chip .status-pill {
+    flex-shrink: 0;
+}
+
+.imob-institucional-chip-limpar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    color: var(--color-primary-600);
+    border-radius: var(--radius-sm);
+}
+
+.imob-institucional-chip-limpar:hover {
+    background-color: var(--color-white);
+}
+
+/* ── Criar/Editar: toggle Sistema (SAMI ERP / SAMILOCA) — só 2 opções, lado
+   a lado com o switch no meio ────────────────────────────────────────── */
+
+.imob-sistema-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
+}
+
+.imob-sistema-toggle-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-400);
+    transition: color var(--transition-fast);
+}
+
+.imob-sistema-toggle-label.is-active {
+    color: var(--color-primary-700);
+}
+
+.imob-institucional-chip-limpar .icon {
+    width: 12px;
+    height: 12px;
+}
+
+.imob-institucional-sugestao-endereco {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    margin-top: 2px;
+}
+
+/* ── Criar/Editar: URL da API SAMILOCA (input + Detectar/Testar) ──────────── */
+
+.imob-samiloca-linha {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+.imob-samiloca-input {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+.imob-samiloca-linha .btn {
+    flex-shrink: 0;
+}
+
+.imob-samiloca-status {
+    display: block;
+    margin-top: var(--space-2);
+}
+
+.imob-samiloca-status.is-ok    { color: var(--color-success); }
+.imob-samiloca-status.is-erro  { color: var(--color-danger); }
+.imob-samiloca-status.is-aviso { color: var(--color-warning); }
+
+/* ── Criar/Editar: comissões por tipo de seguro ───────────────────────────── */
+
+.imob-comissao-lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.imob-comissao-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+}
+
+.imob-comissao-label {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-800);
+}
+
+.imob-comissao-controles {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.imob-comissao-valor-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.imob-comissao-valor {
+    height: 36px;
+    font-size: var(--font-size-sm);
+}
+
+/* Painel "Canais de cotação": código da imobiliária na Segimob (estipulante). */
+
+.imob-estipulante .field-hint {
+    margin: 0;
+}
+
+/* Lista abre logo abaixo do campo (não embaixo do bloco todo). */
+.imob-estipulante-busca {
+    position: relative;
+}
+
+.imob-estipulante .visita-imob-sugestoes li.is-atual {
+    font-weight: 600;
+    color: var(--color-primary-700);
+}
+
+.imob-estipulante .visita-imob-sugestoes li.is-vazio {
+    color: var(--color-gray-400);
+    cursor: default;
+}

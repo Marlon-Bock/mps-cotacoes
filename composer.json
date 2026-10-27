@@ -1,0 +1,141 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "bacon/bacon-qr-code": "^3.0",
+        "laravel/framework": "^12.0",
+        "laravel/tinker": "^2.10.1"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "laravel/pail": "^1.2.2",
+        "laravel/pint": "^1.24",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^11.5.50"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "app/Legado/nucleo.php",
+            "app/Legado/erros.php",
+            "app/Legado/functions.php",
+            "app/Legado/navegacao.php",
+            "app/Legado/geo.php",
+            "app/Legado/icons.php",
+            "app/Legado/assets.php",
+            "app/Legado/media.php",
+            "app/Legado/rascunho.php",
+            "app/Legado/fianca_documentos.php",
+            "app/Legado/google.php",
+            "app/Legado/mailer.php",
+            "app/Legado/institucional.php",
+            "app/Legado/zapi.php",
+            "app/Legado/xlsx.php",
+            "app/Legado/lib/fpdf/fpdf.php",
+            "app/Legado/cotacao_pdf.php",
+            "app/Legado/auditoria.php",
+            "app/Legado/dois_fatores.php",
+            "app/Legado/imovel_erp.php",
+            "app/Legado/detalhe_helpers.php",
+            "app/Legado/embed.php",
+            "app/Legado/api/seguradoras/pottencial.php",
+            "app/Legado/api/seguradoras/pottencial_pj.php",
+            "app/Legado/api/seguradoras/pottencial_res.php",
+            "app/Legado/api/seguradoras/too.php",
+            "app/Legado/api/seguradoras/too_res.php",
+            "app/Legado/api/acesso.php",
+            "app/Legado/api/cotacoes.php",
+            "app/Legado/api/emissao.php",
+            "app/Legado/api/encaminhamento.php",
+            "app/Legado/api/fila.php",
+            "app/Legado/api/historico.php",
+            "app/Legado/api/notificacoes.php",
+            "app/Legado/api/propostas.php",
+            "app/Legado/api/seguradoras.php",
+            "app/Legado/api/status.php",
+            "app/Legado/segimob/cliente.php",
+            "app/Legado/segimob/dominios.php",
+            "app/Legado/segimob/cotacao.php",
+            "app/Legado/segimob/seguradoras.php",
+            "app/Legado/segimob/acesso.php",
+            "app/Legado/segimob/status.php",
+            "app/Legado/segimob/recusa.php",
+            "app/Legado/segimob/historico.php",
+            "app/Legado/segimob/correcao.php",
+            "app/Legado/segimob/estipulante.php",
+            "app/Legado/canais.php",
+            "app/Legado/modulos.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "npm install",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1 --timeout=0\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

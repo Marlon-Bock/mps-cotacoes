@@ -1,0 +1,74 @@
+/**
+ * Design Tokens — MPS Cotações
+ * Paleta: bordô, cinza, branco e preto. Sem cores vibrantes.
+ * Toda tela do sistema deve consumir apenas estas variáveis.
+ */
+
+:root {
+    /* ── Bordô (cor de marca) — #5b0000 e #b80000 são as duas cores principais ── */
+    --color-primary-900: #3a0000;
+    --color-primary-800: #480000;
+    --color-primary-700: #5b0000; /* cor principal */
+    --color-primary-600: #850000;
+    --color-primary-500: #b80000; /* cor principal secundária */
+    --color-primary-400: #d65f5f;
+    --color-primary-100: #f8e6e6;
+
+    /* ── Cinzas ──────────────────────────────────────────────────────────── */
+    --color-gray-900: #1a1a1a;
+    --color-gray-800: #2b2b2b;
+    --color-gray-700: #3f3f3f;
+    --color-gray-600: #565656;
+    --color-gray-500: #757575;
+    --color-gray-400: #9e9e9e;
+    --color-gray-300: #c4c4c4;
+    --color-gray-200: #dedede;
+    --color-gray-100: #eeeeee;
+    --color-gray-50:  #f7f7f7;
+
+    /* ── Base ────────────────────────────────────────────────────────────── */
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    /* ── Semânticas (estado) — neutras, sem verde/vermelho saturado ──────── */
+    --color-success: #2f5d3a;
+    --color-success-bg: #e9f1ea;
+    --color-danger: #7a1f2f;
+    --color-danger-bg: #f7e8ea;
+    --color-warning: #6b5a1f;
+    --color-warning-bg: #f5f1e3;
+    --color-info: #3f3f3f;
+    --color-info-bg: #eeeeee;
+
+    /* ── Tipografia ──────────────────────────────────────────────────────── */
+    --font-base: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.5rem;
+    --font-size-2xl: 2rem;
+
+    /* ── Espaçamento ─────────────────────────────────────────────────────── */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --space-8: 64px;
+
+    /* ── Raio e sombra ───────────────────────────────────────────────────── */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-full: 999px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.16);
+
+    /* ── Transições ──────────────────────────────────────────────────────── */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.25s ease;
+}

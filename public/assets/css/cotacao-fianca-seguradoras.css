@@ -1,0 +1,567 @@
+/**
+ * Tela de seguradoras da Fiança (API das seguradoras) — grade de cards,
+ * pensada pra escalar de 1 a N seguradoras sem redesenhar. Renderizado
+ * direto na página (sem painel/caixa externa) — os próprios cards já são
+ * a unidade visual. Prefixo .seg-*.
+ */
+
+.seg-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.seg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--space-5);
+}
+
+.seg-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--color-white);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.seg-card--melhor {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 1px var(--color-success), var(--shadow-md);
+}
+
+.seg-card-fita {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: center;
+    padding: 6px var(--space-4);
+    background: var(--color-success);
+    color: var(--color-white);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.seg-card-fita svg { width: 13px; height: 13px; }
+
+.seg-card-marca {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-6) var(--space-5) var(--space-4);
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.seg-logo-img {
+    width: 168px;
+    height: 63px;
+    object-fit: contain;
+}
+
+.seg-logo-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 72px;
+    border-radius: var(--radius-md);
+    color: var(--color-white);
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+}
+
+.seg-card-titulo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    padding: var(--space-4) var(--space-5) 0;
+}
+
+.seg-nome {
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-900);
+    line-height: 1.2;
+}
+
+.seg-subtitulo {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    font-variant-numeric: tabular-nums;
+}
+
+.seg-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: fit-content;
+    padding: 3px 12px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.seg-status svg { width: 12px; height: 12px; }
+
+.seg-status--ok       { background: var(--color-success-bg); color: var(--color-success); }
+.seg-status--recusada { background: var(--color-danger-bg);  color: var(--color-danger); }
+.seg-status--pendente { background: var(--color-warning-bg); color: var(--color-warning); }
+
+.seg-apolice {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+    background: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.seg-apolice svg { width: 22px; height: 22px; flex-shrink: 0; }
+
+.seg-apolice-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+}
+
+/* Apólice emitida mas ainda "Creating" na seguradora (PDF ainda não existe). */
+.seg-apolice--pendente {
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.seg-apolice-status {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.seg-apolice-aviso {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+}
+
+.seg-documentos {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.seg-card-rodape.seg-documentos .btn {
+    flex: 1;
+    width: auto;
+}
+
+.seg-apolice-numero {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.seg-card-premio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 2px;
+    padding: var(--space-5) var(--space-5) 0;
+}
+
+.seg-premio-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-premio-valor {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-gray-900);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.seg-reanalise {
+    margin: var(--space-3) var(--space-5) 0;
+}
+
+.seg-reanalise-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.seg-reanalise-campo {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.seg-reanalise-campo--nome {
+    margin-bottom: var(--space-2);
+}
+
+/* Campos no padrão do sistema (.field-input-wrap + ícone + placeholder);
+   aqui só ocupam a largura que sobra ao lado do botão. */
+.seg-reanalise-campo .field-input-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.seg-reanalise-campo .btn {
+    flex-shrink: 0;
+    height: 40px;
+}
+
+.seg-premio-parcela {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.seg-detalhes {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--space-3) var(--space-4);
+    margin: var(--space-4) var(--space-5) 0;
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.seg-detalhe-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.seg-detalhe-item--wide {
+    grid-column: 1 / -1;
+}
+
+.seg-detalhe-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.seg-detalhe-valor {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-700);
+}
+
+.seg-card-rodape {
+    margin-top: var(--space-4);
+    padding: var(--space-4) var(--space-5) 0;
+}
+
+.seg-card-rodape .btn {
+    width: 100%;
+    height: 42px;
+}
+
+.seg-card-rodape-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin-top: auto;
+    padding: var(--space-4) var(--space-5);
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.seg-card-rodape-meta svg { width: 12px; height: 12px; }
+
+@media (max-width: 480px) {
+    .seg-grid { grid-template-columns: 1fr; }
+    .seg-detalhes { grid-template-columns: 1fr; }
+}
+
+/* ── Skeleton — enquanto a cotação real ainda está rodando em segundo
+   plano (a Pottencial demora até uns 45s pra responder). ─────────────── */
+.seg-card--skeleton {
+    align-items: center;
+    padding-bottom: var(--space-5);
+}
+
+.seg-skeleton-bloco {
+    background: var(--color-gray-100);
+    border-radius: var(--radius-sm);
+    width: 100%;
+    animation: seg-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+.seg-card-marca.seg-skeleton-bloco {
+    border-radius: 0;
+}
+
+.seg-card-titulo .seg-skeleton-bloco + .seg-skeleton-bloco {
+    margin-top: 8px;
+}
+
+.seg-skeleton-texto {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: var(--space-4) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.seg-skeleton-texto svg {
+    width: 14px;
+    height: 14px;
+    animation: seg-skeleton-spin 1.2s linear infinite;
+}
+
+@keyframes seg-skeleton-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
+@keyframes seg-skeleton-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ── Histórico de tentativas (cotação inicial + reanálises) ─────────────── */
+
+.seg-historico {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: var(--space-4) var(--space-5) 0;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.seg-historico-linha {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+.seg-historico-desc {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+}
+
+.seg-historico-status {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: var(--color-gray-900);
+    white-space: nowrap;
+}
+
+/* ── Modal "Escolher proposta" (dados do proprietário) ── */
+.seg-modal-proprietario {
+    max-width: 600px;
+}
+
+/* O form envolve body + footer: header e footer ficam fixos e só o
+   .modal-body rola (ele já tem overflow-y: auto no components.css). */
+.seg-modal-form {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.seg-modal-intro {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+/* Aviso informativo dentro do modal (ex: pagamento por fatura da Too no Residencial). */
+.seg-modal-aviso {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-md, 8px);
+    background: var(--color-gray-50);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+.seg-modal-aviso[hidden] { display: none; }
+
+.seg-modal-secao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.seg-modal-secao .field-label {
+    margin: 0;
+}
+
+/* ── Trabalho rodando na fila (emissão/reanálise no worker) ── */
+.seg-processando {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+    background: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.seg-processando-spinner {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.seg-processando-titulo {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.seg-processando-texto {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-size-xs);
+}
+
+/* ── Ficha encaminhada pra fila da MPS (recusada / outras seguradoras) ── */
+.seg-encaminhada {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    color: var(--color-gray-700);
+}
+
+.seg-encaminhada > svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    color: var(--color-primary-600);
+}
+
+.seg-encaminhada-titulo {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-gray-900);
+}
+
+.seg-encaminhada-texto {
+    display: block;
+    margin-top: 2px;
+    font-size: var(--font-size-sm);
+}
+
+.seg-correcao-campos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-4);
+}
+
+.seg-correcao-campo--largo {
+    grid-column: 1 / -1;
+}
+
+.seg-correcao-campos .field.tem-erro .field-input {
+    border-color: var(--color-danger);
+}
+
+@media (max-width: 600px) {
+    .seg-correcao-campos { grid-template-columns: 1fr; }
+}
+
+/* ── Aviso dentro do card (erro, alerta, info, sucesso) ──────────────────
+   Ver pages/cotacao/_partials/seguradoras/aviso.php: ícone + título na 1ª
+   linha; texto e detalhe embaixo, na largura toda (sem recuo). */
+.seg-aviso {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: var(--space-4) var(--space-5) 0;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    text-align: left;
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+}
+
+.seg-aviso-cabeca {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+}
+
+.seg-aviso-icone {
+    display: inline-flex;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.seg-aviso-icone svg { width: 17px; height: 17px; }
+
+.seg-aviso-titulo { font-weight: 600; }
+
+.seg-aviso-texto {
+    margin: 0;
+    color: var(--color-gray-700);
+}
+
+.seg-aviso-extra {
+    margin: 2px 0 0;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-600);
+    overflow-wrap: anywhere;
+}
+
+.seg-aviso-extra strong {
+    font-weight: 600;
+    color: var(--color-gray-800);
+    font-variant-numeric: tabular-nums;
+}
+
+.seg-aviso-acao { margin-top: var(--space-2); }
+
+.seg-aviso--erro    { background: var(--color-danger-bg);  border-color: color-mix(in srgb, var(--color-danger) 18%, transparent); }
+.seg-aviso--alerta  { background: var(--color-warning-bg); border-color: color-mix(in srgb, var(--color-warning) 18%, transparent); }
+.seg-aviso--info    { background: var(--color-info-bg);    border-color: color-mix(in srgb, var(--color-info) 12%, transparent); }
+.seg-aviso--sucesso { background: var(--color-success-bg); border-color: color-mix(in srgb, var(--color-success) 18%, transparent); }
+
+.seg-aviso--erro    .seg-aviso-icone, .seg-aviso--erro    .seg-aviso-titulo { color: var(--color-danger); }
+.seg-aviso--alerta  .seg-aviso-icone, .seg-aviso--alerta  .seg-aviso-titulo { color: var(--color-warning); }
+.seg-aviso--info    .seg-aviso-icone, .seg-aviso--info    .seg-aviso-titulo { color: var(--color-info); }
+.seg-aviso--sucesso .seg-aviso-icone, .seg-aviso--sucesso .seg-aviso-titulo { color: var(--color-success); }
+
+/* No modal o aviso ocupa a largura toda (sem o recuo do card). */
+.seg-modal-form .seg-aviso { margin: 0; }

@@ -1,0 +1,40 @@
+# ── Ambiente ──────────────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Uploads e arquivos gerados em runtime ─────────────────────────────────────
+public/uploads/
+storage/logs/
+storage/cache/
+# Biblioteca ERP compartilhada (funcoes80) — tem credencial do banco institucional
+storage/erp/
+
+# ── Dependências ──────────────────────────────────────────────────────────────
+# Com a barra inicial a regra vale só para o vendor/ do Composer na raiz. Sem
+# ela, pegava também public/assets/js/vendor/, deixando o sortable.min.js fora
+# do repositório — e o deploy sem o script, com 404 em toda página.
+/vendor/
+node_modules/
+
+# ── IDEs e editores ───────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ── Sistema operacional ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── PHP ───────────────────────────────────────────────────────────────────────
+*.log
+
+# ── Backups de banco gerados pelo runner de migrations (contêm dados de produção)
+database/backups/
+
+# ── Manter pastas vazias no git ───────────────────────────────────────────────
+!public/uploads/.gitkeep
+!storage/logs/.gitkeep
+!storage/cache/.gitkeep

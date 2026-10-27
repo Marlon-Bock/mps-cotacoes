@@ -1,0 +1,451 @@
+/**
+ * mpsAlert — modal de feedback próprio do sistema (substitui SweetAlert2).
+ * Usado em TODA ação de carregar/salvar/editar/excluir/logar/criar.
+ * Não deve ser estilizado fora deste arquivo — apenas via classes.
+ */
+
+.mps-alert-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-5);
+    background-color: rgba(26, 26, 26, 0.45);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
+}
+
+.mps-alert-overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mps-alert-card {
+    width: 100%;
+    max-width: 360px;
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--space-7) var(--space-6);
+    text-align: center;
+    transform: scale(0.94) translateY(6px);
+    transition: transform var(--transition-base);
+}
+
+.mps-alert-overlay.is-open .mps-alert-card {
+    transform: scale(1) translateY(0);
+}
+
+.mps-alert-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto var(--space-5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 26px;
+    line-height: 1;
+}
+
+.mps-alert-icon-success {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.mps-alert-icon-error {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+}
+
+.mps-alert-icon-warning {
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.mps-alert-icon-info {
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-600);
+}
+
+/* ── Spinner grande de carregamento (tom escuro, sobre fundo branco) ──────── */
+
+.mps-alert-spinner {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto var(--space-5);
+    border: 3px solid var(--color-gray-200);
+    border-top-color: var(--color-primary-600);
+    border-radius: 50%;
+    animation: mps-alert-spin 0.7s linear infinite;
+}
+
+@keyframes mps-alert-spin {
+    to { transform: rotate(360deg); }
+}
+
+.mps-alert-title {
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: var(--space-2);
+}
+
+.mps-alert-message {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.mps-alert-message:last-child {
+    margin-bottom: 0;
+}
+
+/* Conteúdo customizado que precisa ficar alinhado à esquerda dentro do
+   modal (ex: linha do tempo de uma cotação) — o card em si é centralizado. */
+.mps-alert-body-left {
+    text-align: left;
+}
+
+/* Texto de descrição (ex: descrição do agendamento de visita) — preserva as
+   quebras de linha e rola quando o texto é longo. */
+.mps-alert-message-desc {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-height: 50vh;
+    overflow-y: auto;
+    line-height: 1.5;
+}
+
+/* ── Lista de pendências (popup de "bem-vindo" da imobiliária) ───────────── */
+
+.mps-alert-pendencia-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    text-align: left;
+    margin: var(--space-4) 0;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.mps-alert-pendencia-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-3);
+    background-color: var(--color-gray-50);
+    border-radius: var(--radius-md);
+}
+
+.mps-alert-pendencia-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.mps-alert-pendencia-icon svg { width: 18px; height: 18px; }
+
+.mps-alert-pendencia-icon.is-biometria {
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning);
+}
+
+.mps-alert-pendencia-icon.is-proposta {
+    background-color: var(--color-success-bg);
+    color: var(--color-success);
+}
+
+.mps-alert-pendencia-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    line-height: 1.4;
+}
+
+.mps-alert-pendencia-text strong {
+    display: block;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-900);
+    margin-bottom: 2px;
+}
+
+.mps-skip-subtitle {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    margin-bottom: var(--space-4);
+    line-height: 1.5;
+}
+
+.mps-skip-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    justify-content: center;
+    margin-bottom: var(--space-2);
+}
+
+.mps-skip-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: var(--color-gray-600);
+    background-color: var(--color-gray-100);
+    border: 1px solid var(--color-gray-200);
+    border-radius: 99px;
+    padding: 4px var(--space-3);
+    white-space: nowrap;
+}
+
+.mps-skip-chip::before {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: var(--color-gray-400);
+    flex-shrink: 0;
+}
+
+.mps-alert-input {
+    width: 100%;
+    margin-top: var(--space-4);
+}
+
+.mps-alert-textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-family: inherit;
+    line-height: 1.5;
+}
+
+.mps-alert-input.has-error {
+    border-color: var(--color-danger);
+}
+
+.mps-alert-field-error {
+    display: block;
+    margin-top: var(--space-2);
+    font-size: var(--font-size-xs);
+    color: var(--color-danger);
+    text-align: left;
+}
+
+/* Grid em vez de flex: cada botão preenche 100% da própria célula sem
+   depender de flex-basis, que muda de eixo (largura -> altura) quando
+   flex-direction vira column no mobile e sempre volta a quebrar um dos
+   dois layouts. Com grid, "1 coluna" no mobile e "2 colunas" no desktop
+   já bastam — não tem eixo pra confundir. */
+.mps-alert-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+}
+
+/* Botões do alerta podem ter texto mais longo do que os do resto do
+   sistema (ex.: "Cadastrar depois"/"Cadastrar agora") e o card tem largura
+   fixa — sem isso o white-space:nowrap padrão de .btn estoura a coluna. */
+/* Um único botão (ex.: "Entendi" do error()) preenche as duas colunas em
+   vez de ficar espremido/desalinhado na primeira metade do grid. */
+.mps-alert-actions .btn:only-child {
+    grid-column: 1 / -1;
+}
+
+.mps-alert-actions .btn {
+    height: auto;
+    min-height: 44px;
+    padding: var(--space-2) var(--space-3);
+    white-space: normal;
+    text-align: center;
+}
+
+/* ── Dropzone genérica (seleção de arquivo por arrastar ou clicar) ───────── */
+
+.mps-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-6) var(--space-4);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--radius-md);
+    background-color: var(--color-gray-50);
+    cursor: pointer;
+    transition: border-color var(--transition-base), background-color var(--transition-base);
+}
+
+.mps-dropzone:hover,
+.mps-dropzone.is-dragover {
+    border-color: var(--color-primary-600);
+    background-color: var(--color-primary-50, rgba(133, 0, 0, 0.04));
+}
+
+.mps-dropzone-icon {
+    width: 36px;
+    height: 36px;
+    color: var(--color-gray-400);
+}
+
+.mps-dropzone.is-dragover .mps-dropzone-icon {
+    color: var(--color-primary-600);
+}
+
+.mps-dropzone-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+}
+
+.mps-dropzone-text strong {
+    color: var(--color-primary-600);
+    font-weight: 600;
+}
+
+.mps-dropzone-hint {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+/* ── Preview de arquivo selecionado (antes de enviar) ─────────────────────── */
+
+.mps-file-preview {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    background-color: var(--color-gray-50);
+    text-align: left;
+}
+
+.mps-file-preview-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    color: var(--color-primary-600);
+}
+
+.mps-file-preview-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.mps-file-preview-nome {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mps-file-preview-tamanho {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+/* ── Toast (feedback rápido no canto, para ações sem bloquear a tela) ────── */
+
+.mps-toast-stack {
+    position: fixed;
+    top: var(--space-5);
+    right: var(--space-5);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+    max-width: 360px;
+}
+
+.mps-toast {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    transform: translateX(16px);
+    transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.mps-toast.is-clickable {
+    cursor: pointer;
+}
+
+.mps-toast.is-clickable:hover {
+    border-color: var(--color-primary-300, var(--color-gray-300));
+}
+
+.mps-toast.is-open {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.mps-toast-icon {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+}
+
+.mps-toast-icon-success { background-color: var(--color-success-bg); color: var(--color-success); }
+.mps-toast-icon-error   { background-color: var(--color-danger-bg);  color: var(--color-danger); }
+.mps-toast-icon-warning { background-color: var(--color-warning-bg); color: var(--color-warning); }
+.mps-toast-icon-info    { background-color: var(--color-info-bg);    color: var(--color-gray-700); }
+
+.mps-toast-body {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-800);
+}
+
+.mps-toast-close {
+    flex-shrink: 0;
+    color: var(--color-gray-400);
+    font-size: var(--font-size-sm);
+    line-height: 1;
+}
+
+.mps-toast-close:hover {
+    color: var(--color-gray-700);
+}
+
+/* ── Responsivo ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    .mps-alert-card {
+        padding: var(--space-6) var(--space-5);
+    }
+
+    .mps-alert-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .mps-toast-stack {
+        top: auto;
+        bottom: var(--space-4);
+        right: var(--space-4);
+        left: var(--space-4);
+        max-width: none;
+    }
+}

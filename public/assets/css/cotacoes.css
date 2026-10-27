@@ -1,0 +1,1393 @@
+/* ── Bloco com a barra de status (KPIs) + filtros — um único filho do
+   .app-content, evita somar o gap do pai com margens internas duplicadas ── */
+
+.admin-cot-filterbar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+/* ── Barra superior (admin): KPIs de status + ações à direita ────────────── */
+
+.admin-cot-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+}
+
+.admin-cot-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+}
+
+.admin-cot-toolbar-actions .icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* ── Alternador de visualização (lista / grade de cards) ─────────────────── */
+.view-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    background-color: var(--color-gray-100);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+}
+
+.view-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 26px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--color-gray-500);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.view-toggle-btn .icon { width: 16px; height: 16px; }
+
+.view-toggle-btn:hover { color: var(--color-gray-700); }
+
+.view-toggle-btn.is-active {
+    background-color: var(--color-white);
+    color: var(--color-primary-700);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ── Status como KPI cards clicáveis ─────────────────────────────────────── */
+
+.status-kpi-grid {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+}
+
+/* Filtros por status em grupos rotulados (admin: "Atendimento MPS" e
+   "API das seguradoras"), um embaixo do outro; ocupam a largura que sobra
+   ao lado das ações da barra. */
+.status-kpi-grupos {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.status-kpi-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.status-kpi-grupo-titulo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: var(--color-gray-500);
+}
+
+.status-kpi-grupo-titulo svg {
+    width: 13px;
+    height: 13px;
+}
+
+.status-kpi-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    text-decoration: none;
+    transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.status-kpi-card:hover {
+    border-color: var(--color-gray-300);
+    background-color: var(--color-gray-50);
+}
+
+.status-kpi-card.is-active {
+    border-color: var(--color-primary-600);
+    background-color: var(--color-primary-100);
+}
+
+.status-kpi-icon {
+    display: inline-flex;
+    color: var(--color-gray-400);
+}
+
+.status-kpi-icon .icon {
+    width: 14px;
+    height: 14px;
+}
+
+.status-kpi-card.is-active .status-kpi-icon {
+    color: var(--color-primary-700);
+}
+
+.status-kpi-value {
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    color: var(--color-gray-900);
+    line-height: 1;
+}
+
+.status-kpi-card.is-active .status-kpi-value {
+    color: var(--color-primary-700);
+}
+
+.status-kpi-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    white-space: nowrap;
+}
+
+.status-kpi-card.is-active .status-kpi-label {
+    color: var(--color-primary-600);
+}
+
+/* ── Par de campos de data (de / até) sob um único label ─────────────────── */
+
+.field-date-range {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.field-date-range .field-input-wrap,
+.field-date-range .date-picker {
+    flex: 1;
+    min-width: 110px;
+}
+
+/* ── Chips de status ─────────────────────────────────────────────────────── */
+
+.cotacoes-chips {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+}
+
+.cotacoes-chip .icon {
+    width: 12px;
+    height: 12px;
+}
+
+.cotacoes-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: var(--space-1) var(--space-3);
+    border-radius: 20px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-gray-600);
+    text-decoration: none;
+    transition: color 0.15s;
+    white-space: nowrap;
+}
+
+.cotacoes-chip:hover {
+    color: var(--color-gray-900);
+}
+
+.cotacoes-chip.is-active {
+    color: var(--color-primary-700);
+    font-weight: 700;
+}
+
+.cotacoes-chip-count {
+    color: var(--color-gray-400);
+    font-weight: 400;
+}
+
+.cotacoes-chip.is-active .cotacoes-chip-count {
+    color: var(--color-primary-400);
+}
+
+/* ── Linha de filtros ────────────────────────────────────────────────────── */
+
+.cotacoes-filtros {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+/* Cada .field dentro do filtro não tem margin-bottom e cresce igualmente */
+.cotacoes-filtros .field {
+    flex: 1 1 160px;
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+/* Filtros do admin (mais campos por linha) — não esticam, ficam compactos e próximos */
+.admin-filtros.cotacoes-filtros {
+    gap: var(--space-3);
+}
+
+.admin-filtros .field {
+    flex: 0 1 200px;
+    max-width: 220px;
+}
+
+/* Barra com um único campo de busca (ex: Gerenciar Usuários) — mais largo
+   pra não cortar o placeholder. */
+.admin-filtros .field.field-search-wide {
+    flex: 0 0 360px;
+    max-width: 360px;
+    min-width: 360px;
+}
+
+.admin-filtros .field:has(.field-date-range) {
+    flex: 0 1 300px;
+    max-width: 320px;
+}
+
+.admin-filtros .field-label {
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-gray-500);
+}
+
+/* ── Panel que envolve a lista ───────────────────────────────────────────── */
+
+.cot-panel {
+    overflow: hidden;
+    /* clips border-radius nos extremos */
+    /* .cot-panel é filho flex de .app-content — sem min-width:0 o conteúdo
+       largo do grid (ex: admin-cot-row-visitas) estica a página inteira em
+       vez de rolar só dentro do .admin-cot-grid-wrap. */
+    min-width: 0;
+}
+
+/* ── Linha de cotação ────────────────────────────────────────────────────── */
+
+.cot-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+    border-bottom: 1px solid var(--color-gray-100);
+    transition: background var(--transition-fast);
+    text-decoration: none;
+}
+
+.cot-row:last-child {
+    border-bottom: none;
+}
+
+.cot-row:hover {
+    background: var(--color-gray-50);
+}
+
+/* Ícone circular colorido por tipo */
+.cot-row-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cot-row-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.cot-row-icon--fianca {
+    background: var(--color-primary-50);
+    color: var(--color-primary-700);
+}
+
+.cot-row-icon--auto {
+    background: #fff7ed;
+    color: #c2410c;
+}
+
+.cot-row-icon--titulo {
+    background: #f0fdf4;
+    color: #15803d;
+}
+
+.cot-row-icon--condominial {
+    background: #faf5ff;
+    color: #7c3aed;
+}
+
+.cot-row-icon--incendio {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.cot-row-icon--residencial {
+    background: #f0fdfa;
+    color: #0f766e;
+}
+
+/* Info — nome + tipo·protocolo */
+.cot-row-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.cot-row-nome {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cot-row-sub {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+}
+
+/* Data */
+.cot-row-data {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Botão Ver */
+.cot-row-btn {
+    flex-shrink: 0;
+}
+
+/* Lista com altura limitada (~6 linhas, perto da altura natural do painel
+   "Concluídas" ao lado — 5 itens fixos) e scroll — usada em widgets de
+   dashboard. flex:1 faz a lista crescer até o cap quando o painel vizinho
+   da linha do dashboard-grid for mais alto (evita sobra vazia embaixo da
+   lista com poucos itens); acima do cap, o scroll interno assume normalmente. */
+.fila-scroll {
+    flex: 1;
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+    .fila-scroll {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-primary-800) transparent;
+    }
+}
+
+.fila-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.fila-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fila-scroll::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, var(--color-primary-700) 0%, var(--color-primary-900) 100%);
+    border-radius: 10px;
+}
+
+.fila-scroll::-webkit-scrollbar-thumb:hover {
+    background-image: linear-gradient(180deg, var(--color-primary-600) 0%, var(--color-primary-800) 100%);
+}
+
+/* Loading / empty — precisa de padding próprio pois está dentro do panel */
+.cotacoes-loading {
+    text-align: center;
+    color: var(--color-gray-400);
+    font-size: var(--font-size-sm);
+    padding: var(--space-7) var(--space-5);
+}
+
+/* ── Lista admin em grid (sem <table>) — colunas alinhadas via CSS Grid ──── */
+
+.admin-cot-grid-wrap {
+    overflow-x: auto;
+}
+
+.admin-cot-row {
+    display: grid;
+    /* Data criação + Última atualização viraram 1 coluna só (empilhadas —
+       ver .admin-cot-cell-datas), igual já era na listagem da imobiliária.
+       De 9 colunas pra 8. */
+    /* Produto com folga pra etiqueta "API" (Fiança cotada na API das seguradoras). */
+    grid-template-columns: 215px 125px 1.2fr 190px 1fr 160px 170px 200px;
+    align-items: center;
+    gap: var(--space-3);
+    /* Vertical em --space-2: com os botões de ação de 36px a linha ficava em
+       ~61px, muito alta para um conteúdo de ~20px (pills/texto). */
+    padding: var(--space-2) var(--space-4);
+    border-bottom: 1px solid var(--color-gray-100);
+    min-width: 1340px;
+}
+
+/* ≤1750px: Produto + Protocolo empilham numa coluna só, mesma técnica usada
+   na listagem da imobiliária (ver o bloco análogo em admin-cot-row-imob) —
+   aqui o limiar é maior porque essa variante tem 1 coluna a mais
+   (Imobiliária). */
+@media (max-width: 1750px) {
+    .admin-cot-row:not([class*="admin-cot-row-"]) {
+        grid-template-columns: 215px 1.2fr 190px 1fr 160px 170px 200px;
+        grid-template-rows: auto auto;
+        min-width: 1220px;
+    }
+
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(1) { grid-column: 1; grid-row: 1; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(2) { grid-column: 1; grid-row: 2; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(3) { grid-column: 2; grid-row: 1 / span 2; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(4) { grid-column: 3; grid-row: 1 / span 2; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(5) { grid-column: 4; grid-row: 1 / span 2; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(6) { grid-column: 5; grid-row: 1 / span 2; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(7) { grid-column: 6; grid-row: 1 / span 2; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(8) { grid-column: 7; grid-row: 1 / span 2; }
+
+    .admin-cot-head:not([class*="admin-cot-row-"]) .th-produto-so { display: none; }
+    .admin-cot-head:not([class*="admin-cot-row-"]) .th-produto-protocolo { display: inline; }
+    .admin-cot-head:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(2) { display: none; }
+}
+
+.admin-cot-row:last-child {
+    border-bottom: none;
+}
+
+/* Variante sem a coluna Imobiliária (lista de cotações da própria imobiliária) —
+   Data criação + Última atualização viraram 1 coluna só (empilhadas — ver
+   .admin-cot-cell-datas) e a coluna "Cotação" (baixar proposta/boleto/
+   certificado/compartilhar WhatsApp/copiar biometria) foi pro início da
+   célula de Ações, junto com Ver detalhes/Completar e o chat. De 9 colunas
+   pra 7, sem precisar rolar tanto pra ver "Ver detalhes". */
+/* Espaço extra dividido entre as colunas (não só no Pretendente) — com
+   mínimo pra Produto caber a etiqueta "API" e o Status caber o texto
+   + o (i) das seguradoras sem cortar. */
+.admin-cot-row.admin-cot-row-imob {
+    grid-template-columns:
+        minmax(215px, 1fr) minmax(130px, .7fr) minmax(170px, 1.3fr)
+        minmax(205px, 1fr) minmax(165px, .9fr) minmax(175px, .9fr) 220px;
+    min-width: 1340px;
+}
+
+/* ── ≤1555px: Produto + Protocolo empilham numa coluna só (Produto em cima,
+   Protocolo embaixo) — libera ~120px pras outras colunas sem precisar
+   mudar o HTML: continuam sendo 2 células separadas, só reposicionadas
+   no grid (linha 1 e linha 2 da mesma coluna); as demais células viram
+   "altas" (span nas 2 linhas) pra ficarem centralizadas ao lado. */
+@media (max-width: 1555px) {
+    .admin-cot-row.admin-cot-row-imob {
+        grid-template-columns:
+            minmax(215px, 1fr) minmax(170px, 1.3fr) minmax(205px, 1fr)
+            minmax(165px, .9fr) minmax(175px, .9fr) 220px;
+        grid-template-rows: auto auto;
+        min-width: 1200px;
+    }
+
+    .admin-cot-row.admin-cot-row-imob .admin-cot-cell:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .admin-cot-row.admin-cot-row-imob .admin-cot-cell:nth-child(2) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .admin-cot-row.admin-cot-row-imob .admin-cot-cell:nth-child(3) { grid-column: 2; grid-row: 1 / span 2; }
+    .admin-cot-row.admin-cot-row-imob .admin-cot-cell:nth-child(4) { grid-column: 3; grid-row: 1 / span 2; }
+    .admin-cot-row.admin-cot-row-imob .admin-cot-cell:nth-child(5) { grid-column: 4; grid-row: 1 / span 2; }
+    .admin-cot-row.admin-cot-row-imob .admin-cot-cell:nth-child(6) { grid-column: 5; grid-row: 1 / span 2; }
+    .admin-cot-row.admin-cot-row-imob .admin-cot-cell:nth-child(7) { grid-column: 6; grid-row: 1 / span 2; }
+
+    /* Cabeçalho: mostra "Produto/Protocolo" numa linha só (não empilhado —
+       não tem o valor real embaixo pra ocupar a 2ª linha, só o rótulo) e
+       esconde a célula "Protocolo" solta, que nas linhas de baixo virou a
+       2ª linha da célula de Produto. */
+    .admin-cot-head.admin-cot-row-imob .th-produto-so { display: none; }
+    .admin-cot-head.admin-cot-row-imob .th-produto-protocolo { display: inline; }
+    .admin-cot-head.admin-cot-row-imob .admin-cot-cell:nth-child(2) { display: none; }
+}
+
+.th-produto-protocolo {
+    display: none;
+}
+
+.admin-cot-cell-vazio {
+    color: var(--color-gray-300);
+    font-style: italic;
+    font-size: var(--font-size-xs);
+}
+
+/* ── Coluna "Datas" — Criada + Atualizada empilhadas numa célula só ──────── */
+.admin-cot-cell-datas {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: flex-start;
+    /* .admin-cot-cell (base) trunca com "…" numa linha só — errado aqui,
+       que é sempre 2 linhas de propósito. */
+    overflow: visible;
+    white-space: normal;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+    line-height: 1.5;
+}
+
+.admin-cot-cell-datas span {
+    white-space: nowrap;
+}
+
+.admin-cot-cell-datas .admin-cot-data-label {
+    color: var(--color-gray-400);
+}
+
+/* Botões de Ações grudados na direita — sem isso "Ver detalhes" fica em
+   posições diferentes de linha pra linha, dependendo de ter ou não o botão
+   de download antes dele. */
+.admin-cot-cell-acoes .table-actions {
+    justify-content: flex-end;
+}
+
+/* ── Status em cada seguradora (Fiança API), ao passar o mouse ────────────
+   Ícone ao lado do pill de Status — evita abrir uma coluna nova pra cada
+   detalhe novo. Uma cotação pode ter N seguradoras (Pottencial hoje, mais
+   a caminho); o hover lista o status de cada uma. */
+.api-status-hover {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 6px;
+    color: var(--color-gray-400);
+    cursor: help;
+    vertical-align: middle;
+}
+
+.api-status-hover:hover,
+.api-status-hover:focus-visible {
+    color: var(--color-gray-600);
+}
+
+.api-status-hover svg {
+    width: 14px;
+    height: 14px;
+}
+
+.api-status-panel {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: max-content;
+    min-width: 200px;
+    max-width: 300px;
+    padding: var(--space-3);
+    background: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    cursor: default;
+    white-space: normal;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition: opacity var(--transition-base), transform var(--transition-base), visibility var(--transition-base);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.api-status-hover:hover .api-status-panel,
+.api-status-hover:focus-visible .api-status-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    /* O painel nasceu só pra leitura (pointer-events:none acima, de propósito
+       — pra não roubar clique de nada por trás quando só mostra texto). Agora
+       que tem link/botão clicável dentro (painel de arquivos), precisa reativar
+       aqui, senão o clique atravessa o painel sem nunca alcançar o conteúdo. */
+    pointer-events: auto;
+}
+
+/* ── Painel de arquivos da listagem (Título: proposta/boleto/certificado/cartão;
+   Fiança: orçamentos/apólice/contrato e links de biometria) ─────────────────
+   Variante clara do .api-status-panel — este tem botões de ação de verdade
+   dentro (baixar arquivo, copiar link), não só texto pra ler; o fundo escuro
+   do painel padrão (pensado pra tooltip informativo) não combina com botão. */
+.anexos-painel {
+    min-width: 220px;
+}
+
+.anexos-painel-item {
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.api-status-panel-item {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-700);
+    line-height: 1.4;
+}
+
+.api-status-panel-item strong {
+    color: var(--color-gray-900);
+    font-weight: 600;
+}
+
+/* Balão "Status nas seguradoras" (Fiança API): uma linha por seguradora com
+   o pill do status + o motivo do encaminhamento pra MPS, quando houver. */
+.api-status-panel--seguradoras {
+    gap: var(--space-2);
+    min-width: 250px;
+}
+
+.api-painel-titulo {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-gray-500);
+}
+
+.api-painel-linha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px var(--space-3);
+}
+
+.api-painel-seguradora {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.api-painel-cor {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.api-painel-extra {
+    flex-basis: 100%;
+    padding-left: 14px;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.api-painel-vazio {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.api-painel-encaminhada {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-top: 2px;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    line-height: 1.4;
+    color: var(--color-gray-600);
+}
+
+.api-painel-encaminhada svg {
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    flex-shrink: 0;
+    color: var(--color-gray-500);
+}
+
+.api-painel-encaminhada strong {
+    display: block;
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+/* Variante para listas com menos colunas (ex: usuários) */
+.admin-cot-row.admin-cot-row-usuarios {
+    grid-template-columns: 1.1fr 1.4fr 160px 150px 150px 210px;
+    min-width: 0;
+}
+
+/* Variante para o painel "Aguardando Liberação" (Produto, Protocolo, Pretendente,
+   Status, Atendente, Data criação, Última atualização, Ações) — mesma lógica de
+   admin-cot-row-imob, mas sem a coluna "Cotação" (não se aplica nessa etapa). */
+.admin-cot-row.admin-cot-row-pre-analise {
+    grid-template-columns: 175px 120px 1.3fr 200px 160px 150px 150px 190px;
+    min-width: 1465px;
+}
+
+/* Variante para a lista de chamados (Protocolo, Título, Assunto, Status,
+   Atendente, Atualizado em, Ações). */
+.admin-cot-row.admin-cot-row-chamados {
+    grid-template-columns: 120px 1.2fr 1fr 200px 160px 150px 190px;
+    min-width: 1150px;
+}
+
+/* Variante do admin (Protocolo, Título, Imobiliária, Atendente, Status,
+   Atualizado em, Ações — sem a coluna Assunto, que o lado admin não precisa) */
+.admin-cot-row.admin-cot-row-chamados-admin {
+    grid-template-columns: 120px 1.2fr 1fr 180px 170px 150px 90px;
+    min-width: 1150px;
+}
+
+/* Variante para a lista de Imobiliárias (Nome, CNPJ, E-mail, Telefone, Status, Cadastrada em, Ações) */
+.admin-cot-row.admin-cot-row-imobiliarias {
+    grid-template-columns: 1.2fr 150px 200px 140px 110px 130px 150px;
+    min-width: 1080px;
+}
+
+/* Variante para os atendimentos do chat do FAQ (Usuário, Dados informados,
+   Caminho percorrido, Status, Atualizado em) */
+.admin-cot-row.admin-cot-row-faq-atendimentos {
+    grid-template-columns: 190px 220px 1fr 150px 160px;
+    min-width: 1000px;
+}
+
+/* Variante para Horário de Atendimento por produto (Produto, Início, Fim,
+   Dias, Ativo, Ações) */
+.admin-cot-row.admin-cot-row-horarios {
+    grid-template-columns: 1.2fr 100px 100px 1fr 140px 120px;
+    min-width: 780px;
+}
+
+/* Variante para a lista de Campanhas (Título, Status, Imobiliárias, Período, Ações) */
+.admin-cot-row.admin-cot-row-campanhas {
+    grid-template-columns: 1.3fr 120px 140px 220px 210px;
+    min-width: 0;
+}
+
+/* Variante da imobiliária: sem colunas de Imobiliárias/Ações (somente leitura). */
+.admin-cot-row.admin-cot-row-campanhas-imob {
+    grid-template-columns: 1.5fr 140px 220px;
+    min-width: 0;
+}
+
+.admin-cot-row-clickable {
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+}
+
+.admin-cot-row-clickable:hover {
+    background-color: var(--color-gray-50);
+}
+
+/* Variante para a lista de rascunhos salvos (Produto, Protocolo, Nome, Detalhes, Data, Ações) */
+.admin-cot-row.admin-cot-row-rascunhos {
+    grid-template-columns: 175px 130px 180px 1.3fr 140px 200px;
+    min-width: 1015px;
+}
+
+/* Variante para a lista de usuários de uma imobiliária (Nome, E-mail, Telefone,
+   Perfil, Último login, Status, Ações) */
+.admin-cot-row.admin-cot-row-imob-usuarios {
+    grid-template-columns: 1fr 1.3fr 140px 110px 160px 100px 150px;
+    min-width: 1100px;
+}
+
+/* Variante para os rankings do Gerenciador (#, Nome, Cotações, % do total) */
+.admin-cot-row.admin-cot-row-ranking {
+    grid-template-columns: 48px 1fr 110px 110px;
+    min-width: 0;
+}
+
+/* Variante para o ranking de atendentes do Gerenciador — mesma coisa + Tempo médio */
+.admin-cot-row.admin-cot-row-ranking-atend {
+    grid-template-columns: 48px 1fr 110px 110px 130px;
+    min-width: 0;
+}
+
+/* Variante para a lista "Tempo por cotação" do Gerenciador — uma coluna por
+   etapa do fluxo (Protocolo, Atendente, Status, Pré-análise, Aguardando,
+   Em análise, Biometria, Aprovado/Recusado, Envio cotação, Concluído, Tempo
+   total, Ações). Título/Condominial não têm todas as etapas (mostram "—").
+   Linha larga — rola horizontalmente dentro de .admin-cot-grid-wrap, mesmo
+   padrão de .admin-cot-row-imob. */
+.admin-cot-row.admin-cot-row-tempos {
+    grid-template-columns: 130px 1fr 150px 110px 110px 110px 110px 150px 110px 110px 200px 90px;
+    min-width: 1570px;
+}
+
+.admin-cot-row:not(.admin-cot-head):hover {
+    background-color: var(--color-gray-50);
+}
+
+/* Realce de linhas apontadas pelo popup de pendências (?destacar=protocolo,...) */
+.admin-cot-row.is-destacado {
+    background-color: var(--color-warning-bg);
+    box-shadow: inset 3px 0 0 var(--color-warning);
+    animation: cot-row-destaque-pulso 1.4s ease-in-out 2;
+}
+
+@keyframes cot-row-destaque-pulso {
+    0%, 100% { background-color: var(--color-warning-bg); }
+    50% { background-color: var(--color-gray-50); }
+}
+
+.admin-cot-head {
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--color-gray-400);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.admin-cot-cell {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.admin-cot-cell .table-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    overflow: visible;
+    white-space: nowrap;
+}
+
+/* A célula de Ações não trunca texto — precisa ficar com overflow visível
+   pra não cortar o badge do botão de chat, que "vaza" pra fora do botão. */
+.admin-cot-cell-acoes {
+    overflow: visible;
+}
+
+.admin-cot-cell-nome {
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.admin-cot-empty {
+    text-align: center;
+    color: var(--color-gray-400);
+    font-size: var(--font-size-sm);
+    padding: var(--space-7) var(--space-5);
+}
+
+/* ── Tabela admin: atendente (avatar + nome), colunas ordenáveis ─────────── */
+
+.atendente-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.avatar-sm {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 11px;
+    flex-shrink: 0;
+}
+
+/* Variante maior do avatar_sm() — usada nas listas de usuários (Gerenciar
+   Usuários / Usuários MPS), onde o avatar precisa de mais destaque. */
+.avatar-md {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--color-primary-100);
+    color: var(--color-primary-700);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+/* Variante com foto real (ver avatar_sm() em functions.php) — mesmas
+   dimensões/formato do círculo de iniciais, só recorta a imagem. */
+.avatar-sm-img {
+    object-fit: cover;
+}
+
+.th-sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.th-sortable:hover {
+    color: var(--color-gray-700);
+}
+
+.sort-arrow {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 9px;
+    color: var(--color-primary-600);
+}
+
+/* ── Paginação ─────────────────────────────────────────────────────────────── */
+
+.admin-cot-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-gray-100);
+}
+
+.admin-cot-pagination-info {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.admin-cot-pagination-btns {
+    display: flex;
+    gap: var(--space-2);
+}
+
+.admin-cot-pagination-btns .icon {
+    width: 14px;
+    height: 14px;
+}
+
+@media (max-width: 768px) {
+    /* Mantém flex-direction: row + flex-wrap para empilhar os filtros.
+       Com "column" o flex-basis dos campos passaria a valer para a ALTURA
+       (esticando os campos verticalmente) e o align-items: flex-end do
+       container encolheria a largura deles, jogando-os para a direita. */
+    .cotacoes-filtros .field {
+        flex: 1 1 100%;
+    }
+
+    /* .admin-filtros .field-search-wide (min-width: 360px) é mais específico
+       que a regra acima e vencia mesmo dentro deste media query, estourando
+       a largura da página no mobile e criando scroll horizontal. Repetindo
+       o seletor completo aqui garante a mesma especificidade. */
+    .admin-filtros .field,
+    .admin-filtros .field.field-search-wide,
+    .admin-filtros .field:has(.field-date-range) {
+        flex: 1 1 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .cot-row {
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+    }
+
+    .cot-row-data {
+        display: none;
+    }
+}
+
+/* ── Chamados: grid de filtros ───────────────────────────────────────────── */
+
+.chamados-filtros-grid {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.chamados-filtros-grid .field {
+    flex: 0 1 200px;
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.chamados-filtros-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+    padding-bottom: 0;
+}
+
+.chamados-filtros-actions .icon {
+    width: 14px;
+    height: 14px;
+}
+
+/* ── Chamados: tabela ────────────────────────────────────────────────────── */
+
+.chamados-table-wrap {
+    overflow-x: auto;
+}
+
+.chamados-id {
+    font-variant-numeric: tabular-nums;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+    white-space: nowrap;
+    min-width: 40px;
+}
+
+.chamados-titulo {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.chamados-assunto {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    margin-top: 1px;
+}
+
+.chamados-sem-atendente {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    font-style: italic;
+}
+
+.chamados-data {
+    font-variant-numeric: tabular-nums;
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    /* Mesmo caso de .cotacoes-filtros: sem "column", senão o flex-basis dos
+       campos vira altura e o align-items: flex-end encolhe a largura deles. */
+    .chamados-filtros-grid .field {
+        flex: 1 1 100%;
+    }
+}
+
+.p-0 {
+    padding: 0 !important;
+}
+/* ══════════════════════════════════════════════════════════════════════════
+   TELAS ESTREITAS (≤1160px) — listagens em grid viram CARDS empilhados
+   --------------------------------------------------------------------------
+   No desktop as listagens são grids de colunas fixas que rolam na horizontal
+   dentro de .admin-cot-grid-wrap. Abaixo de 1160px não dá pra espremer todas
+   as colunas sem cortar nada, então cada linha vira um card: o cabeçalho some
+   e cada célula ganha seu rótulo via ::before, montado por posição
+   (nth-child) — assim TODA informação continua visível, só empilhada em vez
+   de lado a lado, sem precisar alterar o markup de nenhuma das listagens.
+
+   Especificidade: usamos o wrapper (.admin-cot-grid-wrap .admin-cot-row...)
+   para vencer as variantes .admin-cot-row.admin-cot-row-X definidas em
+   visitas.css e dashboard.css, independente da ordem de carga dos arquivos.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 1160px) {
+
+    /* ── Filtros de busca ────────────────────────────────────────────────
+       No desktop os campos ficam lado a lado (flex: 0 1 200px). No celular
+       eles encolhiam até ficarem ilegíveis em vez de quebrar linha: aqui cada
+       campo ocupa a largura toda e empilha. */
+    .cotacoes-filtros .field,
+    .admin-filtros .field,
+    .admin-filtros .field:has(.field-date-range),
+    .admin-filtros .field.field-search-wide {
+        flex: 1 1 100%;
+        max-width: none;
+        min-width: 0;
+    }
+
+    /* Sem scroll lateral — os cards empilham na largura da tela */
+    .admin-cot-grid-wrap {
+        overflow-x: visible;
+    }
+
+    /* O cabeçalho de colunas não faz sentido no formato card.
+       As regras de card abaixo excluem .admin-cot-head via :not() — sem isso
+       o display:block delas venceria este display:none por ordem no arquivo. */
+    .admin-cot-grid-wrap .admin-cot-head {
+        display: none;
+    }
+
+    .admin-cot-grid-wrap .admin-cot-row:not(.admin-cot-head),
+    .admin-cot-grid-wrap .admin-cot-row[class*="admin-cot-row-"]:not(.admin-cot-head) {
+        display: block;
+        min-width: 0;
+        gap: 0;
+        padding: var(--space-2) var(--space-4);
+        margin-bottom: var(--space-3);
+        border: 1px solid var(--color-gray-200);
+        border-radius: var(--radius-md);
+        background-color: var(--color-white);
+    }
+
+    .admin-cot-grid-wrap .admin-cot-row:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Cada célula vira uma linha "rótulo → valor" */
+    .admin-cot-grid-wrap .admin-cot-cell {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--space-3);
+        padding: var(--space-2) 0;
+        border-bottom: 1px solid var(--color-gray-100);
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+        text-align: right;
+    }
+
+    .admin-cot-grid-wrap .admin-cot-cell:last-child {
+        border-bottom: none;
+    }
+
+    /* Rótulo gerado por CSS (o content vem das regras por variante abaixo) */
+    .admin-cot-grid-wrap .admin-cot-cell::before {
+        flex: 0 0 40%;
+        text-align: left;
+        font-size: var(--font-size-xs);
+        font-weight: 600;
+        color: var(--color-gray-500);
+    }
+
+    /* Célula de ações: o rótulo ocupa só a largura do texto (nas demais
+       células ele reserva 40%), senão sobra pouco espaço e os botões quebram
+       um por linha em vez de ficarem lado a lado.
+       Duas formas no markup: umas listagens marcam a célula com
+       .admin-cot-cell-acoes, outras (ex.: Gerenciar Usuários) só têm o
+       .table-actions dentro — o :has() cobre as duas. */
+    .admin-cot-grid-wrap .admin-cot-cell-acoes::before,
+    .admin-cot-grid-wrap .admin-cot-cell:has(.table-actions)::before {
+        flex: 0 0 auto;
+    }
+
+    /* flex-start (não flex-end) aqui: com vários botões (download, WhatsApp,
+       Ver detalhes, chat) nem sempre cabem numa linha só nessa largura, e
+       quebrando alinhado à direita cada linha quebrada fica com um tamanho
+       diferente — parece "quebrado". Alinhado à esquerda, fica consistente
+       independente de quantos botões tiverem nessa linha. */
+    .admin-cot-grid-wrap .admin-cot-cell .table-actions {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        white-space: normal;
+        width: 100%;
+    }
+
+    /* ── Rótulos por variante (ordem = ordem das colunas no cabeçalho) ───── */
+
+    /* Cotações (admin) — variante base, sem classe admin-cot-row-* */
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(1)::before { content: "Produto"; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(2)::before { content: "Protocolo"; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(3)::before { content: "Pretendente"; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(4)::before { content: "Status"; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(5)::before { content: "Imobiliária"; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(6)::before { content: "Atendente"; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(7)::before { content: "Datas"; }
+    .admin-cot-row:not([class*="admin-cot-row-"]) .admin-cot-cell:nth-child(8)::before { content: "Ações"; }
+
+    /* Cotações (imobiliária) */
+    .admin-cot-row-imob .admin-cot-cell:nth-child(1)::before { content: "Produto"; }
+    .admin-cot-row-imob .admin-cot-cell:nth-child(2)::before { content: "Protocolo"; }
+    .admin-cot-row-imob .admin-cot-cell:nth-child(3)::before { content: "Pretendente"; }
+    .admin-cot-row-imob .admin-cot-cell:nth-child(4)::before { content: "Status"; }
+    .admin-cot-row-imob .admin-cot-cell:nth-child(5)::before { content: "Atendente"; }
+    .admin-cot-row-imob .admin-cot-cell:nth-child(6)::before { content: "Datas"; }
+    .admin-cot-row-imob .admin-cot-cell:nth-child(7)::before { content: "Ações"; }
+
+    /* Aguardando liberação / pré-análise */
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(1)::before { content: "Produto"; }
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(2)::before { content: "Protocolo"; }
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(3)::before { content: "Pretendente"; }
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(4)::before { content: "Status"; }
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(5)::before { content: "Atendente"; }
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(6)::before { content: "Data criação"; }
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(7)::before { content: "Última atualização"; }
+    .admin-cot-row-pre-analise .admin-cot-cell:nth-child(8)::before { content: "Ações"; }
+
+    /* Rascunhos salvos */
+    .admin-cot-row-rascunhos .admin-cot-cell:nth-child(1)::before { content: "Produto"; }
+    .admin-cot-row-rascunhos .admin-cot-cell:nth-child(2)::before { content: "Protocolo"; }
+    .admin-cot-row-rascunhos .admin-cot-cell:nth-child(3)::before { content: "Nome do rascunho"; }
+    .admin-cot-row-rascunhos .admin-cot-cell:nth-child(4)::before { content: "Detalhes"; }
+    .admin-cot-row-rascunhos .admin-cot-cell:nth-child(5)::before { content: "Último acesso"; }
+    .admin-cot-row-rascunhos .admin-cot-cell:nth-child(6)::before { content: "Ações"; }
+
+    /* Usuários (admin e imobiliária) */
+    .admin-cot-row-usuarios .admin-cot-cell:nth-child(1)::before { content: "Nome"; }
+    .admin-cot-row-usuarios .admin-cot-cell:nth-child(2)::before { content: "E-mail"; }
+    .admin-cot-row-usuarios .admin-cot-cell:nth-child(3)::before { content: "Telefone"; }
+    .admin-cot-row-usuarios .admin-cot-cell:nth-child(4)::before { content: "Perfil"; }
+    .admin-cot-row-usuarios .admin-cot-cell:nth-child(5)::before { content: "Último login"; }
+    .admin-cot-row-usuarios .admin-cot-cell:nth-child(6)::before { content: "Ações"; }
+
+    /* Usuários de uma imobiliária */
+    .admin-cot-row-imob-usuarios .admin-cot-cell:nth-child(1)::before { content: "Nome"; }
+    .admin-cot-row-imob-usuarios .admin-cot-cell:nth-child(2)::before { content: "E-mail"; }
+    .admin-cot-row-imob-usuarios .admin-cot-cell:nth-child(3)::before { content: "Telefone"; }
+    .admin-cot-row-imob-usuarios .admin-cot-cell:nth-child(4)::before { content: "Perfil"; }
+    .admin-cot-row-imob-usuarios .admin-cot-cell:nth-child(5)::before { content: "Último login"; }
+    .admin-cot-row-imob-usuarios .admin-cot-cell:nth-child(6)::before { content: "Status"; }
+    .admin-cot-row-imob-usuarios .admin-cot-cell:nth-child(7)::before { content: "Ações"; }
+
+    /* Imobiliárias */
+    .admin-cot-row-imobiliarias .admin-cot-cell:nth-child(1)::before { content: "Nome"; }
+    .admin-cot-row-imobiliarias .admin-cot-cell:nth-child(2)::before { content: "CNPJ"; }
+    .admin-cot-row-imobiliarias .admin-cot-cell:nth-child(3)::before { content: "E-mail"; }
+    .admin-cot-row-imobiliarias .admin-cot-cell:nth-child(4)::before { content: "Telefone"; }
+    .admin-cot-row-imobiliarias .admin-cot-cell:nth-child(5)::before { content: "Status"; }
+    .admin-cot-row-imobiliarias .admin-cot-cell:nth-child(6)::before { content: "Cadastrada em"; }
+    .admin-cot-row-imobiliarias .admin-cot-cell:nth-child(7)::before { content: "Ações"; }
+
+    /* Chamados (imobiliária) */
+    .admin-cot-row-chamados .admin-cot-cell:nth-child(1)::before { content: "Protocolo"; }
+    .admin-cot-row-chamados .admin-cot-cell:nth-child(2)::before { content: "Título"; }
+    .admin-cot-row-chamados .admin-cot-cell:nth-child(3)::before { content: "Assunto"; }
+    .admin-cot-row-chamados .admin-cot-cell:nth-child(4)::before { content: "Status"; }
+    .admin-cot-row-chamados .admin-cot-cell:nth-child(5)::before { content: "Atendente"; }
+    .admin-cot-row-chamados .admin-cot-cell:nth-child(6)::before { content: "Atualizado em"; }
+    .admin-cot-row-chamados .admin-cot-cell:nth-child(7)::before { content: "Ações"; }
+
+    /* Chamados (admin) */
+    .admin-cot-row-chamados-admin .admin-cot-cell:nth-child(1)::before { content: "Protocolo"; }
+    .admin-cot-row-chamados-admin .admin-cot-cell:nth-child(2)::before { content: "Título"; }
+    .admin-cot-row-chamados-admin .admin-cot-cell:nth-child(3)::before { content: "Imobiliária"; }
+    .admin-cot-row-chamados-admin .admin-cot-cell:nth-child(4)::before { content: "Atendente"; }
+    .admin-cot-row-chamados-admin .admin-cot-cell:nth-child(5)::before { content: "Status"; }
+    .admin-cot-row-chamados-admin .admin-cot-cell:nth-child(6)::before { content: "Atualizado em"; }
+    .admin-cot-row-chamados-admin .admin-cot-cell:nth-child(7)::before { content: "Ações"; }
+
+    /* Campanhas */
+    .admin-cot-row-campanhas .admin-cot-cell:nth-child(1)::before { content: "Título"; }
+    .admin-cot-row-campanhas .admin-cot-cell:nth-child(2)::before { content: "Status"; }
+    .admin-cot-row-campanhas .admin-cot-cell:nth-child(3)::before { content: "Imobiliárias"; }
+    .admin-cot-row-campanhas .admin-cot-cell:nth-child(4)::before { content: "Período"; }
+    .admin-cot-row-campanhas .admin-cot-cell:nth-child(5)::before { content: "Ações"; }
+
+    /* Campanhas (imobiliária) — só Título/Status/Período, sem Imobiliárias/Ações */
+    .admin-cot-row-campanhas-imob .admin-cot-cell:nth-child(3)::before { content: "Período"; }
+
+    /* Horário de atendimento */
+    .admin-cot-row-horarios .admin-cot-cell:nth-child(1)::before { content: "Produto"; }
+    .admin-cot-row-horarios .admin-cot-cell:nth-child(2)::before { content: "Início"; }
+    .admin-cot-row-horarios .admin-cot-cell:nth-child(3)::before { content: "Fim"; }
+    .admin-cot-row-horarios .admin-cot-cell:nth-child(4)::before { content: "Dias"; }
+    .admin-cot-row-horarios .admin-cot-cell:nth-child(5)::before { content: "Ativo"; }
+    .admin-cot-row-horarios .admin-cot-cell:nth-child(6)::before { content: "Ações"; }
+
+    /* Atendimentos do chat do FAQ */
+    .admin-cot-row-faq-atendimentos .admin-cot-cell:nth-child(1)::before { content: "Usuário"; }
+    .admin-cot-row-faq-atendimentos .admin-cot-cell:nth-child(2)::before { content: "Dados informados"; }
+    .admin-cot-row-faq-atendimentos .admin-cot-cell:nth-child(3)::before { content: "Caminho percorrido"; }
+    .admin-cot-row-faq-atendimentos .admin-cot-cell:nth-child(4)::before { content: "Status"; }
+    .admin-cot-row-faq-atendimentos .admin-cot-cell:nth-child(5)::before { content: "Atualizado em"; }
+
+    /* Rodízio */
+    .admin-cot-row-rodizio .admin-cot-cell:nth-child(1)::before { content: "Ordem"; }
+    .admin-cot-row-rodizio .admin-cot-cell:nth-child(2)::before { content: "Atendente"; }
+    .admin-cot-row-rodizio .admin-cot-cell:nth-child(3)::before { content: "Status"; }
+    .admin-cot-row-rodizio .admin-cot-cell:nth-child(4)::before { content: "Próximo"; }
+    .admin-cot-row-rodizio .admin-cot-cell:nth-child(5)::before { content: "Ações"; }
+
+    /* Agendar visita */
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(1)::before { content: "Data"; }
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(2)::before { content: "Horário"; }
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(3)::before { content: "Título"; }
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(4)::before { content: "Região"; }
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(5)::before { content: "Imobiliária"; }
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(6)::before { content: "Corretor"; }
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(7)::before { content: "Status"; }
+    .admin-cot-row-agendar .admin-cot-cell:nth-child(8)::before { content: "Ações"; }
+
+    /* Histórico de visitas */
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(1)::before  { content: "Data"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(2)::before  { content: "Imobiliária"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(3)::before  { content: "Corretor"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(4)::before  { content: "Entrada"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(5)::before  { content: "Saída"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(6)::before  { content: "Gerente"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(7)::before  { content: "Atendente"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(8)::before  { content: "Motivo"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(9)::before  { content: "Motivo (desc.)"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(10)::before { content: "Outros"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(11)::before { content: "Outros (desc.)"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(12)::before { content: "Falta material"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(13)::before { content: "Materiais"; }
+    .admin-cot-row-visitas .admin-cot-cell:nth-child(14)::before { content: "Observações"; }
+
+    /* Gerenciador — ranking de imobiliárias */
+    .admin-cot-row-ranking .admin-cot-cell:nth-child(1)::before { content: "#"; }
+    .admin-cot-row-ranking .admin-cot-cell:nth-child(2)::before { content: "Imobiliária"; }
+    .admin-cot-row-ranking .admin-cot-cell:nth-child(3)::before { content: "Cotações"; }
+    .admin-cot-row-ranking .admin-cot-cell:nth-child(4)::before { content: "% do total"; }
+
+    /* Gerenciador — ranking de atendentes */
+    .admin-cot-row-ranking-atend .admin-cot-cell:nth-child(1)::before { content: "#"; }
+    .admin-cot-row-ranking-atend .admin-cot-cell:nth-child(2)::before { content: "Atendente"; }
+    .admin-cot-row-ranking-atend .admin-cot-cell:nth-child(3)::before { content: "Cotações"; }
+    .admin-cot-row-ranking-atend .admin-cot-cell:nth-child(4)::before { content: "% do total"; }
+    .admin-cot-row-ranking-atend .admin-cot-cell:nth-child(5)::before { content: "Tempo médio"; }
+
+    /* Gerenciador — tempo por cotação */
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(1)::before  { content: "Protocolo"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(2)::before  { content: "Atendente"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(3)::before  { content: "Status"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(4)::before  { content: "Pré-análise"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(5)::before  { content: "Aguardando"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(6)::before  { content: "Em análise"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(7)::before  { content: "Biometria"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(8)::before  { content: "Aprovado/Recusado"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(9)::before  { content: "Envio cotação"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(10)::before { content: "Concluído"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(11)::before { content: "Tempo total"; }
+    .admin-cot-row-tempos .admin-cot-cell:nth-child(12)::before { content: "Ações"; }
+}
+
+.api-painel-nowrap {
+    white-space: nowrap;
+}
+
+/* Mesmo cinza do pill/aviso de Desistência no resto do site. */
+.api-painel-desistencia {
+    background: var(--color-gray-100);
+}
+
+.api-painel-desistencia svg {
+    color: var(--color-gray-600);
+}
+
